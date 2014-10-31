@@ -1,0 +1,59 @@
+<Z-EVES-GUI-State version="1" index="0"><textItem history="2" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:1"><zed-box>   [PERSON, ID] </zed-box></textItem
+><textItem history="3" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:2"><schema-box>Fid<decl-part/>   members: ID &rarrbtl;PERSON 
+  banned: &Popf;ID <ax-part/>  banned &subeq;<word style="roman"/>dom<word/> members </schema-box></textItem
+><textItem history="4" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:3"><schema-box>InitFid<decl-part/>   Fid' <ax-part/>  members' = &empty;
+  banned' = &empty;</schema-box></textItem
+><textItem history="5" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:4"><theorem-def>Initialization<ax-part/>   &exists;Fid' &bullet; InitFid </theorem-def></textItem
+><textItem history="6" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:5"><schema-box>AddMember<decl-part/>   &Delta;Fid 
+  applicant?: PERSON 
+  id!: ID <ax-part/>  applicant? &notin;<word style="roman"/>ran<word/> members 
+  id! &notin;<word style="roman"/>dom<word/> members 
+  members' = members &cup;{id! &rtarr;applicant? }
+  banned' = banned  </schema-box></textItem
+><textItem history="7" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:6"><theorem-def>preAddMember<ax-part/> &forall;Fid; applicant?: PERSON     | (&exists;id: ID &bullet; id &notin;<word style="roman"/>dom<word/> members) &wedge;      applicant? &notin;<word style="roman"/>ran<word/> members     &bullet; <word style="roman"/>pre<word/> AddMember </theorem-def></textItem
+><textItem history="8" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:7"><schema-box>BanMember<decl-part/>   &Delta;Fid 
+  ban?: ID <ax-part/>  ban? &isin;<word style="roman"/>dom<word/> members 
+  banned' = banned &cup;{ban? }
+  members' = members </schema-box></textItem
+><textItem history="9" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:8"><theorem-def>BanMemberIsHonest<ax-part/>   &forall;Fid; ban?: ID | ban? &isin;<word style="roman"/>dom<word/> members &bullet; <word style="roman"/>pre<word/> BanMember </theorem-def></textItem
+><textItem history="10" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:9"><theorem-def>BadBannedIsXi<ax-part/>   &forall;BanMember | ban? &isin;banned &bullet; &Xi;Fid </theorem-def></textItem
+><textItem history="11" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:10"><schema-box>DeleteMember<decl-part/>   &Delta;Fid 
+  id?: ID <ax-part/>  members' = {id? }&vltrib;members 
+  banned' = banned \{id? }</schema-box></textItem
+><textItem history="12" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:11"><theorem-def usage="rule">setminusSubseteqsetminus[X]<ax-part/>   &forall;A,B,C,D: &Popf;X         | A &subeq;C &wedge;D &subeq;B         &bullet; A \B &isin;&Popf;(C \D) </theorem-def></textItem
+><textItem history="13" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:12"><theorem-def>CanDeleteMember<ax-part/>   &forall;Fid; id?: ID &bullet; <word style="roman"/>pre<word/> DeleteMember </theorem-def></textItem
+><textItem history="14" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:13"><zed-box>   AddThenDelete &eqhat;AddMember &fatsemi;DeleteMember[id!/id?] </zed-box></textItem
+><textItem history="15" location="/home/eves/release/z-eves-2-2/examples/fansys.tex:14"><theorem-def>AddThenDeleteIsXi<ax-part/>   AddThenDelete &rArr;&Xi;Fid </theorem-def></textItem
+><script name="preAddMember"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+><scriptItem number="3"><ztext>instantiate id! == id</ztext></scriptItem
+><scriptItem number="4"><ztext>prove</ztext></scriptItem
+><scriptItem number="5"><ztext>apply cupInPinj</ztext></scriptItem
+><scriptItem number="6"><ztext>prove</ztext></scriptItem
+></script
+><script name="BanMemberIsHonest"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+></script
+><script name="Initialization"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+></script
+><script name="BadBannedIsXi"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+><scriptItem number="3"><ztext>apply cupSubsetRight</ztext></scriptItem
+><scriptItem number="4"><ztext>rewrite</ztext></scriptItem
+></script
+><script name="CanDeleteMember"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+></script
+><script name="AddThenDeleteIsXi"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+><scriptItem number="3"><ztext>cases</ztext></scriptItem
+><scriptItem number="4"><ztext>apply extensionality to predicate  banned = banned \{id!}</ztext></scriptItem
+><scriptItem number="5"><ztext>prove</ztext></scriptItem
+><scriptItem number="6"><ztext>use inSubset[Y := banned, Z := <word style="roman"/>dom<word/> members]</ztext></scriptItem
+><scriptItem number="7"><ztext>simplify</ztext></scriptItem
+><scriptItem number="8"><ztext>next</ztext></scriptItem
+><scriptItem number="9"><ztext>apply ndresNothing</ztext></scriptItem
+><scriptItem number="10"><ztext>rewrite</ztext></scriptItem
+><scriptItem number="11"><ztext>next</ztext></scriptItem
+></script
+><script name="setminusSubseteqsetminus"><scriptItem number="2"><ztext> apply inPower</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>use inSubset[e/x, D/Y, B/Z]</ztext></scriptItem
+><scriptItem number="5"><ztext>simplify</ztext></scriptItem
+></script
+></Z-EVES-GUI-State>

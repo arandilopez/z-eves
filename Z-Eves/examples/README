@@ -1,0 +1,47 @@
+This directory contains several scripts demonstrating Z/EVES.
+
+Files with the ".zev" extension are for use in the GUI.  These files can be
+opened in the GUI, where the declarations can be viewed and the proofs can be
+browsed.
+
+Files with the ".zcs" extension are the extra "core Z/EVES save files" that
+hold part of the saved data; they are used by Z/EVES but are not interesting
+for most users.
+
+Files with the ".zed" extension show how to use the LaTeX interface.  The best
+way to browse them is to use the editor mode (either Emacs on Unix or in the
+Windows LaTeX interface) to step through them one declaration or command at a
+time.  Alternatively, declarations and commands can be cut and pasted from
+your favorite editor or file viewer into Z/EVES.  These files show how we use
+Z/EVES interactively, and so contain interspersed declarations and proof
+commands.  They also contain some "undo" commands that remove bad paragraphs,
+and "back" steps that remove unwanted proof steps.  These are not usually
+preserved in a source file in normal use of Z/EVES, but are included in these
+examples to give some examples of how they are used, and how specifications
+are incrementally checked and modified.
+
+Files with the ".tex" extension can be typeset and printed.  These correspond
+to the ".zed" files, but do not contain some of the interactive steps.
+
+
+The following examples are provided:
+
+analysis        General examples of using Z/EVES to analyse specifications
+bbook           Spivey's Birthday Book example (more or less)
+fansys          A football fan club system (Potter, Sinclair, and Till)
+induction       Two simple induction proofs (one over a free type)
+logsys          A logging system (Potter, Sinclair, and Till)
+proving         Demonstrations of the various proof commands
+sample          A simple employee database
+ticket          A simple refinement proof
+
+Several examples from the User's Guide are also included:
+
+interacting	    "interacting with Z/EVES" (from the Version 1.5 Guide, but
+                       still useful for LaTeX mode users)
+recursion	    the proof promised in "inconsistency"
+refinement	    from "refinement"
+testing	            from "test cases"
+exploring	    from "explorative proving"
+planning	    from "planned proofs"
+developing	    from "theory development"

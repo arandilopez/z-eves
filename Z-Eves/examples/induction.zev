@@ -1,0 +1,25 @@
+<Z-EVES-GUI-State version="1" index="0"><textItem history="2" location="/home/eves/release/z-eves-2-2/examples/induction.tex:1"><zed-box>   set1 == {n: &Nopf;| n*n &geq;n }</zed-box></textItem
+><textItem history="3" location="/home/eves/release/z-eves-2-2/examples/induction.tex:2"><theorem-def>lemma1<ax-part/>   &Nopf;&subeq;set1 </theorem-def></textItem
+><textItem history="4" location="/home/eves/release/z-eves-2-2/examples/induction.tex:3"><theorem-def>thm1<ax-part/>  &forall;n: &Nopf;&bullet; n* n &geq;n </theorem-def></textItem
+><textItem history="5" location="/home/eves/release/z-eves-2-2/examples/induction.tex:4"><zed-box>   T ::= nil | leaf &lchev;&Zopf;&rchev;| pair &lchev;T &cross;T &rchev;</zed-box></textItem
+><textItem history="6" location="/home/eves/release/z-eves-2-2/examples/induction.tex:5"><axiomatic-box><decl-part/>   flip: T &rarr;T <ax-part/>&lchev;rule flipNil&rchev; flip nil = nil 
+&lchev;rule flipLeaf&rchev; &forall;x: &Zopf;&bullet; flip (leaf x) = leaf x 
+&lchev;rule flipPair&rchev; &forall;x, y: T &bullet; flip (pair (x,y)) = 		pair (flip (y), flip (x)) </axiomatic-box></textItem
+><textItem history="7" location="/home/eves/release/z-eves-2-2/examples/induction.tex:6"><zed-box>   flipFlipSet == {x: T | flip (flip x) = x }</zed-box></textItem
+><textItem history="8" location="/home/eves/release/z-eves-2-2/examples/induction.tex:7"><theorem-def usage="rule">flipFlip<ax-part/>   &forall;x: T &bullet; flip (flip   x) = x </theorem-def></textItem
+><script name="lemma1"><scriptItem number="2"><ztext> use natInduction [S := set1]</ztext></scriptItem
+><scriptItem number="3"><ztext>invoke set1</ztext></scriptItem
+><scriptItem number="4"><ztext>prove</ztext></scriptItem
+></script
+><script name="thm1"><scriptItem number="2"><ztext> use lemma1</ztext></scriptItem
+><scriptItem number="3"><ztext>invoke set1</ztext></scriptItem
+><scriptItem number="4"><ztext>rewrite</ztext></scriptItem
+><scriptItem number="5"><ztext>apply inPower</ztext></scriptItem
+><scriptItem number="6"><ztext>instantiate e == n</ztext></scriptItem
+><scriptItem number="7"><ztext>rewrite</ztext></scriptItem
+></script
+><script name="flipFlip"><scriptItem number="2"><ztext> use T$induction [X := flipFlipSet] </ztext></scriptItem
+><scriptItem number="3"><ztext>invoke</ztext></scriptItem
+><scriptItem number="4"><ztext>prove</ztext></scriptItem
+></script
+></Z-EVES-GUI-State>

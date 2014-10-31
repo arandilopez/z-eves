@@ -1,0 +1,139 @@
+\documentclass{article}
+\usepackage{z-eves}
+\begin{document}
+
+The Fan system, from Potter, Sinclair, and Till, Chapter 8.
+
+\begin{zed}
+  [PERSON, ID]
+\end{zed}
+
+\begin{schema}{Fid}
+  members: ID \pinj PERSON \\
+  banned: \power ID
+\where
+  banned \subseteq \dom members
+\end{schema}
+
+\begin{schema}{InitFid}
+  Fid'
+\where
+  members' = \emptyset \\
+  banned' = \emptyset
+\end{schema}
+
+\begin{theorem}{Initialization}
+  \exists Fid' @ InitFid
+\end{theorem}
+
+\begin{zproof}
+prove by reduce;
+\end{zproof}
+
+\begin{schema}{AddMember}
+  \Delta Fid \\
+  applicant?: PERSON \\
+  id!: ID
+\where
+  applicant? \notin \ran members \\
+  id! \notin \dom members \\
+  members' = members \cup \{ id! \mapsto applicant? \} \\
+  banned' = banned 
+\end{schema}
+
+\begin{theorem}{preAddMember}
+\forall Fid; applicant?: PERSON
+    | (\exists id: ID @ id \notin \dom members) \land
+      applicant? \notin \ran members
+    @ \pre AddMember
+\end{theorem}
+
+\begin{zproof}
+prove by reduce;
+instantiate id! == id;
+prove;
+apply cupInPinj;
+prove;
+\end{zproof}
+
+\begin{schema}{BanMember}
+  \Delta Fid \\
+  ban?: ID
+\where
+  ban? \in \dom members \\
+  banned' = banned \cup \{ ban? \} \\
+  members' = members
+\end{schema}
+
+% "Honest" operation schemas list the precondition explicitly (as a constraint
+% on the initial state and inputs).  BanMember is, indeed, honest:
+
+\begin{theorem}{BanMemberIsHonest}
+  \forall Fid; ban?: ID | ban? \in \dom members @ \pre BanMember
+\end{theorem}
+
+\begin{zproof}
+prove by reduce;
+\end{zproof}
+
+\begin{theorem}{BadBannedIsXi}
+  \forall BanMember | ban? \in banned @ \Xi Fid
+\end{theorem}
+
+\begin{zproof}
+prove by reduce;
+apply cupSubsetRight;
+rewrite;
+\end{zproof}
+
+\begin{schema}{DeleteMember}
+  \Delta Fid \\
+  id?: ID
+\where
+  members' = \{ id? \} \ndres members \\
+  banned' = banned \setminus \{ id? \}
+\end{schema}
+
+\begin{theorem}{rule setminusSubseteqsetminus}[X]
+  \forall A,B,C,D: \power X
+        | A \subseteq C \land D \subseteq B
+        @ A \setminus B \in \power (C \setminus D)
+\end{theorem}
+
+\begin{zproof}
+apply inPower;
+prove;
+use inSubset[e/x, D/Y, B/Z];
+simplify;
+\end{zproof}
+
+\begin{theorem}{CanDeleteMember}
+  \forall Fid; id?: ID @ \pre DeleteMember
+\end{theorem}
+
+\begin{zproof}
+prove by reduce;
+\end{zproof}
+
+
+\begin{zed}
+  AddThenDelete \defs AddMember \semi DeleteMember[id!/id?]
+\end{zed}
+
+\begin{theorem}{AddThenDeleteIsXi}
+  AddThenDelete \implies \Xi Fid
+\end{theorem}
+\begin{zproof}
+prove by reduce;
+cases;
+apply extensionality to predicate  banned = banned \setminus \{id!\};
+prove;
+use inSubset[Y := banned, Z := \dom members];
+simplify;
+next;
+apply ndresNothing;
+rewrite;
+next;
+\end{zproof}
+
+\end{document}

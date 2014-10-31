@@ -1,0 +1,198 @@
+\documentclass{article}
+\usepackage{z-eves}
+
+This is Spivey's Birthday Book example, suitable for processing with
+Z/EVES Version 2, and illustrating the analysis of a complete specification.
+It can be imported into the GUI, or ``read'' in the command line interface.
+
+The Birthday Book is a system for recording people's birthdays.
+There are operations for adding or removing people, 
+or finding the names of people with a given birthday.
+
+The sets $NAME$ of people's names, and $DATE$, of dates, are taken as
+given; their structure is of no concern for this detail of specification.
+
+\begin{zed}
+[NAME, DATE]
+\end{zed}
+
+The Birthday Book uses a partial function $birthday$ to record the
+birthdays of known people.  The set $known$ constains the names of
+the people whose birthdays are recorded.
+
+\begin{schema}{BirthdayBook}
+  known: \power NAME\\
+  birthday: NAME \pfun DATE
+\where
+  known = \dom birthday
+\end{schema}
+
+The following property follows immediately from the definition of
+$BirthdayBook$.  It is stated as a forward rule to allow several of the
+proofs that follow to succeed without the need to expand the BirthdayBook
+schema.
+
+\begin{theorem}{frule BirthdayBookPredicate}
+  BirthdayBook \implies known = \dom birthday
+\end{theorem}
+\begin{zproof}
+reduce;
+\end{zproof}
+
+Initially, there are no recorded birthdays.
+
+\begin{schema}{InitBirthdayBook}
+  BirthdayBook
+\where
+  birthday = \emptyset \\
+  known = \emptyset
+\end{schema}
+
+The initial state is satisfiable:
+
+\begin{theorem}{InitIsOK}
+  \exists BirthdayBook @ InitBirthdayBook
+\end{theorem}
+
+\begin{zproof}
+prove by reduce;
+\end{zproof}
+
+The $AddBirthday$ operation registers a new birthday, given a
+name and a date.
+
+\begin{schema}{AddBirthday}
+  \Delta BirthdayBook \\
+  name?: NAME \\
+  date?: DATE
+\where
+  name? \notin known
+\also
+  birthday' = birthday \cup \{ name? \mapsto date? \}
+\end{schema}
+
+\begin{theorem}{AddBirthdayIsHonest}
+\forall BirthdayBook; name?: NAME; date?: DATE @
+     name? \notin known \implies \pre AddBirthday
+\end{theorem}
+
+\begin{zproof}
+prove by reduce;
+\end{zproof}
+
+Although the specification of $AddBirthday$ does not mention the final
+value of $known$, it is obviously the initial value with the addition of
+the new name:
+
+\begin{theorem}{knownAddBirthday}
+  AddBirthday \implies known' = known \cup \{ name? \}
+\end{theorem}
+
+\begin{zproof}
+prove by reduce;
+\end{zproof}
+
+The $Find$ operation returns the birthday of a particular user.
+on that date.
+
+\begin{schema}{FindBirthday}
+  \Xi BirthdayBook  \\
+  name?: NAME\\
+  date!: DATE
+\where
+  name? \in known
+\also
+  date! = birthday (name?)
+\end{schema}
+
+The domain condition can be proved with the simplify command.
+\begin{zproof}[FindBirthday\$domainCheck]
+simplify;
+\end{zproof}
+
+% simple theorem: find after add gives the expected date:
+
+\begin{zed}
+  AddThenFind \defs AddBirthday \semi FindBirthday
+\end{zed}
+
+\begin{theorem}{AddFind}
+  AddThenFind \implies date! = date?
+\end{theorem}
+
+\begin{zproof}
+prove by reduce;
+\end{zproof}
+
+The $Remind$ operation returns the set of names of people with
+birthdays on a given date.
+
+\begin{schema}{Remind1}
+  \Xi BirthdayBook \\
+  today?: DATE \\
+  cards!: \power NAME
+\where
+  cards! = \{ n: NAME | birthday(n) = today? \}
+\end{schema}
+\begin{zproof}[Remind1\$domainCheck]
+prove;
+\end{zproof}
+
+Rewriting the domain condition leads to an obviously unprovable goal.
+Oops.  In $\{ n: NAME | birthday(n) = today? \}$ we are considering
+$birthday(n)$ for every $n \in NAME$.  But $birthday$ is partial.
+
+Here is another try:
+
+\begin{schema}{Remind}
+  \Xi BirthdayBook \\
+  today?: DATE \\
+  cards!: \power NAME
+\where
+  cards! = \{ n: known | birthday(n) = today? \}
+\end{schema}
+
+Now, the prove command finishes the proof of the domain check.
+\begin{zproof}[Remind\$domainCheck]
+prove;
+\end{zproof}
+
+Schema calculus is supported.  Here is a "total" AddBirthday operation
+
+\begin{zed}
+  REPORT::= ok | already\_known | not\_known
+\end{zed}
+
+\begin{schema}{Success}
+  result!: REPORT
+\where
+  result! = ok
+\end{schema}
+
+\begin{schema}{AlreadyKnown}
+  \Xi BirthdayBook \\
+  name?: NAME \\
+  result!: REPORT
+\where
+   name? \in known \\
+   result! = already\_known
+\end{schema}
+
+The "total" AddBirthday operation:
+
+\begin{zed}
+  RAddBirthday \defs (AddBirthday \land Success) \lor AlreadyKnown
+\end{zed}
+
+\begin{theorem}{RAddBirthdayIsTotal}
+  \forall BirthdayBook; name?: NAME; date?: DATE
+    @ \pre RAddBirthday
+\end{theorem}
+\begin{zproof}
+prove by reduce;
+split name? \in known;
+prove;
+\end{zproof}
+
+\end{document}
+

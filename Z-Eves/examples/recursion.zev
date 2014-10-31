@@ -1,0 +1,64 @@
+<Z-EVES-GUI-State version="1" index="0"><textItem history="2" location="/home/eves/release/z-eves-2-2/examples/recursion.tex:1"><zed-box>   base == (&lambda;p: &Zopf;&bullet; 1) </zed-box></textItem
+><textItem history="3" location="/home/eves/release/z-eves-2-2/examples/recursion.tex:2"><zed-box>  step == (&lambda;f: &Zopf;; n: &Nopf;; p: &Zopf;&bullet; p * f) </zed-box></textItem
+><textItem history="4" location="/home/eves/release/z-eves-2-2/examples/recursion.tex:3"><theorem-def usage="grule">baseType<ax-part/>   base &isin;&Zopf;&rarr;&Zopf;</theorem-def></textItem
+><textItem history="5" location="/home/eves/release/z-eves-2-2/examples/recursion.tex:4"><theorem-def usage="rule">applyBase<ax-part/>   &forall;x: &Zopf;&bullet; base(x) = 1 </theorem-def></textItem
+><textItem history="6" location="/home/eves/release/z-eves-2-2/examples/recursion.tex:5"><theorem-def usage="grule">stepType<ax-part/>   step &isin;&Zopf;&cross;&Nopf;&cross;&Zopf;&rarr;&Zopf;</theorem-def></textItem
+><textItem history="7" location="/home/eves/release/z-eves-2-2/examples/recursion.tex:6"><theorem-def usage="rule">applyStep<ax-part/>   &forall;v, p: &Zopf;; n: &Nopf;&bullet; step(v, n, p) = p * v </theorem-def></textItem
+><textItem history="8" location="/home/eves/release/z-eves-2-2/examples/recursion.tex:7"><zed-box>   swap == (&lambda;x,y: &Zopf;&bullet; (y,x)) </zed-box></textItem
+><textItem history="9" location="/home/eves/release/z-eves-2-2/examples/recursion.tex:8"><theorem-def usage="grule">swapType<ax-part/>   swap &isin;&Zopf;&cross;&Zopf;&rarr;&Zopf;&cross;&Zopf;</theorem-def></textItem
+><textItem history="10" location="/home/eves/release/z-eves-2-2/examples/recursion.tex:9"><theorem-def usage="rule">applySwap<ax-part/>   &forall;x, y: &Zopf;&bullet; swap (x,y) = (y,x) </theorem-def></textItem
+><textItem history="11" location="/home/eves/release/z-eves-2-2/examples/recursion.tex:10"><theorem-def usage="rule">swapImageCross<ax-part/>   &forall;A, B: &Popf;&Zopf;&bullet;      swap &lvparen;A &cross;B &rvparen;= B &cross;A </theorem-def></textItem
+><textItem history="12" location="/home/eves/release/z-eves-2-2/examples/recursion.tex:11"><theorem-def usage="rule">invSwap<ax-part/>   swap &suptilde;= swap </theorem-def></textItem
+><textItem history="13" location="/home/eves/release/z-eves-2-2/examples/recursion.tex:12"><theorem-def>expExists<ax-part/> &exists;exp: &Zopf;&cross;&Nopf;&rarr;&Zopf;&bullet; 
+  &forall;x: &Zopf;; n: &Nopf;&bullet; 
+  exp(x,0) = 1 
+  &wedge;exp(x,n+1) = x * exp(x,n) </theorem-def></textItem
+><script name="stepType"><scriptItem number="2"><ztext> with enabled (_&rarr;_, _&rarrb;_, _&lrarr;_) prove by reduce</ztext></scriptItem
+><scriptItem number="3"><ztext>apply inCross3</ztext></scriptItem
+><scriptItem number="4"><ztext>prove</ztext></scriptItem
+></script
+><script name="applySwap"><scriptItem number="2"><ztext> use pairInFunction[&Zopf;&cross;&Zopf;, &Zopf;&cross;&Zopf;] 	[f := swap, x := (x,y), y := (y,x)]</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>prove by reduce</ztext></scriptItem
+></script
+><script name="applyStep"><scriptItem number="2"><ztext> use  pairInFunction[&Zopf;&cross;&Nopf;&cross;&Zopf;, &Zopf;]        [f := step, x := (v, n, p), y := p * v]</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>prove by reduce</ztext></scriptItem
+></script
+><script name="invSwap"><scriptItem number="2"><ztext> invoke swap</ztext></scriptItem
+><scriptItem number="3"><ztext>apply extensionality</ztext></scriptItem
+><scriptItem number="4"><ztext>prove</ztext></scriptItem
+><scriptItem number="5"><ztext>apply invDef</ztext></scriptItem
+><scriptItem number="6"><ztext>invoke (_&lrarr;_)</ztext></scriptItem
+><scriptItem number="7"><ztext>prove</ztext></scriptItem
+><scriptItem number="8"><ztext>instantiate p == ((y__0, x__0), (x__0, y__0))</ztext></scriptItem
+><scriptItem number="9"><ztext>prove</ztext></scriptItem
+></script
+><script name="baseType"><scriptItem number="2"><ztext> with enabled (_&rarr;_, _&rarrb;_, _&lrarr;_) prove by reduce</ztext></scriptItem
+></script
+><script name="expExists"><scriptItem number="2"><ztext> use generalPrimitiveRecursion[&Zopf;, &Zopf;]</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>instantiate exp == swap &fatsemi;f</ztext></scriptItem
+><scriptItem number="5"><ztext>prove</ztext></scriptItem
+><scriptItem number="6"><ztext>instantiate p == x, n__0 == n</ztext></scriptItem
+><scriptItem number="7"><ztext>prove</ztext></scriptItem
+><scriptItem number="8"><ztext>apply domComp</ztext></scriptItem
+><scriptItem number="9"><ztext>prove</ztext></scriptItem
+></script
+><script name="swapImageCross"><scriptItem number="2"><ztext> apply extensionality</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>apply inImage</ztext></scriptItem
+><scriptItem number="5"><ztext>prove</ztext></scriptItem
+><scriptItem number="6"><ztext>invoke swap</ztext></scriptItem
+><scriptItem number="7"><ztext>apply inCross2</ztext></scriptItem
+><scriptItem number="8"><ztext>prove</ztext></scriptItem
+></script
+><script name="applyBase"><scriptItem number="2"><ztext> use pairInFunction[&Zopf;, &Zopf;][f := base, y := 1]</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>prove by reduce</ztext></scriptItem
+></script
+><script name="swapType"><scriptItem number="2"><ztext> with enabled (_&rarr;_, _&rarrb;_, _&lrarr;_) prove by reduce</ztext></scriptItem
+><scriptItem number="3"><ztext>apply inCross2</ztext></scriptItem
+><scriptItem number="4"><ztext>prove</ztext></scriptItem
+></script
+></Z-EVES-GUI-State>

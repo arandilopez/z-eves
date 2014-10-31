@@ -1,0 +1,54 @@
+<Z-EVES-GUI-State version="1" index="0"><textItem history="2" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:1"><zed-box> [NAME, DATE] </zed-box></textItem
+><textItem history="3" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:2"><schema-box>BirthdayBook<decl-part/>   known: &Popf;NAME
+  birthday: NAME &rarrb;DATE <ax-part/>  known = <word style="roman"/>dom<word/> birthday </schema-box></textItem
+><textItem history="4" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:3"><theorem-def usage="frule">BirthdayBookPredicate<ax-part/>   BirthdayBook &rArr;known = <word style="roman"/>dom<word/> birthday </theorem-def></textItem
+><textItem history="5" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:4"><schema-box>InitBirthdayBook<decl-part/>   BirthdayBook <ax-part/>  birthday = &empty;
+  known = &empty;</schema-box></textItem
+><textItem history="6" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:5"><theorem-def>InitIsOK<ax-part/>   &exists;BirthdayBook &bullet; InitBirthdayBook </theorem-def></textItem
+><textItem history="7" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:6"><schema-box>AddBirthday<decl-part/>   &Delta;BirthdayBook 
+  name?: NAME 
+  date?: DATE <ax-part/>  name? &notin;known 
+  birthday' = birthday &cup;{name? &rtarr;date? }</schema-box></textItem
+><textItem history="8" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:7"><theorem-def>AddBirthdayIsHonest<ax-part/> &forall;BirthdayBook; name?: NAME; date?: DATE &bullet;      name? &notin;known &rArr;<word style="roman"/>pre<word/> AddBirthday </theorem-def></textItem
+><textItem history="9" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:8"><theorem-def>knownAddBirthday<ax-part/>   AddBirthday &rArr;known' = known &cup;{name? }</theorem-def></textItem
+><textItem history="10" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:9"><schema-box>FindBirthday<decl-part/>   &Xi;BirthdayBook  
+  name?: NAME
+  date!: DATE <ax-part/>  name? &isin;known 
+  date! = birthday (name?) </schema-box></textItem
+><textItem history="11" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:10"><zed-box>   AddThenFind &eqhat;AddBirthday &fatsemi;FindBirthday </zed-box></textItem
+><textItem history="12" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:11"><theorem-def>AddFind<ax-part/>   AddThenFind &rArr;date! = date? </theorem-def></textItem
+><textItem history="13" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:12"><schema-box>Remind1<decl-part/>   &Xi;BirthdayBook 
+  today?: DATE 
+  cards!: &Popf;NAME <ax-part/>  cards! = {n: NAME | birthday(n) = today? }</schema-box></textItem
+><textItem history="14" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:13"><schema-box>Remind<decl-part/>   &Xi;BirthdayBook 
+  today?: DATE 
+  cards!: &Popf;NAME <ax-part/>  cards! = {n: known | birthday(n) = today? }</schema-box></textItem
+><textItem history="15" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:14"><zed-box>   REPORT::= ok | already_known | not_known </zed-box></textItem
+><textItem history="16" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:15"><schema-box>Success<decl-part/>   result!: REPORT <ax-part/>  result! = ok </schema-box></textItem
+><textItem history="17" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:16"><schema-box>AlreadyKnown<decl-part/>   &Xi;BirthdayBook 
+  name?: NAME 
+  result!: REPORT <ax-part/>   name? &isin;known 
+   result! = already_known </schema-box></textItem
+><textItem history="18" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:17"><zed-box>   RAddBirthday &eqhat;(AddBirthday &wedge;Success) &vee;AlreadyKnown </zed-box></textItem
+><textItem history="19" location="/home/eves/release/z-eves-2-2/examples/bbook.tex:18"><theorem-def>RAddBirthdayIsTotal<ax-part/>   &forall;BirthdayBook; name?: NAME; date?: DATE     &bullet; <word style="roman"/>pre<word/> RAddBirthday </theorem-def></textItem
+><script name="Remind1$domainCheck"><scriptItem number="2"><ztext> prove</ztext></scriptItem
+></script
+><script name="BirthdayBookPredicate"><scriptItem number="2"><ztext> reduce</ztext></scriptItem
+></script
+><script name="knownAddBirthday"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+></script
+><script name="InitIsOK"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+></script
+><script name="AddFind"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+></script
+><script name="AddBirthdayIsHonest"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+></script
+><script name="RAddBirthdayIsTotal"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+><scriptItem number="3"><ztext>split name? &isin;known</ztext></scriptItem
+><scriptItem number="4"><ztext>prove</ztext></scriptItem
+></script
+><script name="FindBirthday$domainCheck"><scriptItem number="2"><ztext> simplify</ztext></scriptItem
+></script
+><script name="Remind$domainCheck"><scriptItem number="2"><ztext> prove</ztext></scriptItem
+></script
+></Z-EVES-GUI-State>

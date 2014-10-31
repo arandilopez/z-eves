@@ -1,0 +1,238 @@
+% Z/EVES demo script file: prover commands and capabilities
+%
+% for version 1.4
+%
+
+% Simplification
+
+% tautologies and arithmetic
+
+try 1 < 2;
+simplify;
+
+try x > 1 \implies x > 0;
+simplify;
+
+try a = b \land b = c \implies a = c;
+simplify;
+
+try \forall x, y, z: \num @ x \leq y \leq z \implies x \leq z ;
+simplify;
+
+try 1 \leq x \land 2 + 3 * x \leq y \implies 5 \leq y ;
+simplify;
+
+try \lnot (1,2) = (1,3) ;
+simplify;
+
+try x = (10, 20) \implies x.1 < x.2 ;
+simplify;
+
+try x \in S \implies (x \in S \land x \in T);
+simplify;
+
+try \exists x: \num @ x = 1 \land x \in S;
+simplify;
+simplify;
+
+% trivial simplify just does propositional reasoning, but is faster
+
+try x \in S \implies (x \in S \land x \in T);
+trivial simplify;
+
+try a = b \land b = c \implies a = c;
+trivial simplify;
+
+try (x \in S \implies x \in T) \lor (x \in T \implies x \in S);
+trivial simplify;
+
+try (x \in S \lor x \in T) \implies (x \in T \lor x \in S);
+simplify;
+
+% may need "normalization" to get all tautologies
+
+try (x \in S \lor x \in T) \land
+  (x \in S \implies x \in U) \land
+  (x \in T \implies x \in U)
+\implies x \in U;
+simplify;
+with normalization simplify;
+
+try (x \in S \lor x \in T) \implies (x \in S \land x \in U);
+simplify;
+with normalization simplify;
+
+% but normalization can get ugly
+
+try (x < 0 \lor x > 0) \implies (\exists y: \num @ x + y = 0) ;
+simplify;
+with normalization simplify;
+
+% (normalization applies to other commands, too)
+
+% Rewriting (uses rewrite rules and simplifies)
+
+try x \in \{ 1 \} ;
+simplify;
+rewrite;
+
+try (x, y) \in \nat \cross \num;
+rewrite;
+
+% you can see the individual steps if you want:
+retry;
+apply tupleInCross2;
+apply inNat;
+
+try \{ 1\} \subseteq \nat;
+rewrite;
+
+% the individual steps:
+retry;
+apply subsetDef;
+apply unitSubset;
+apply inNat;
+simplify;
+
+try x \in \{ 1, 2, 3 \};
+rewrite;
+
+try \forall A, B: \power \num @ A \cap B \subseteq A;
+rewrite;
+
+try \forall A, B: \power \num @
+      A \subseteq B \implies A \cup B = B;
+rewrite;
+
+try x \in \nat \cup \num;
+rewrite;
+
+% rewrite also deals with membership in comprehension
+
+try x \in \{ y: \nat | y < 10 \} ;
+rewrite;
+
+% there is also a "trivial rewrite" command
+
+retry;
+trivial rewrite;
+
+% Reduction (uses definitions, rewrites, and simplifies)
+
+\begin{zed}
+  newId [X] == \{ p: X \cross X | p.1 = p.2 \}
+\end{zed}
+
+try (1,1) \in newId[\num];
+simplify;
+rewrite;
+reduce;
+
+retry;
+invoke newId;
+rewrite;
+rewrite;
+
+
+% Quantifiers
+
+try \exists S: \power \nat @ 1 \in S ;
+instantiate S == \{ 1 \} ;
+rewrite;
+
+% ... prenexing eliminates quantifiers if it can.
+
+try (\exists x: \nat @ x \in S) \implies (\exists y: \num @ y \in S);
+prenex;
+instantiate y == x;
+rewrite;
+
+% unique existence is handled specially; rewriting expands it.
+
+try \exists_1 n: \nat @ n < 1 ;
+rewrite;
+% note the name change!
+instantiate x == 0;
+prove;
+
+% Proofs are not always trivial; the user must guide the system:
+
+try (1 \upto 5) \cap (3 \upto 7)  = 3 \upto 5;
+prove;
+% no effect...
+
+apply extensionality;
+prove;
+
+% Here is a script of a more complex proof attempt
+
+\begin{theorem}{relationInDomCrossRan}[X,Y]
+  \forall R: X \rel Y @ R \in (\dom R) \rel (\ran R)
+\end{theorem}
+
+rewrite;
+% Command had no effect.
+reduce;
+% Command had no effect.
+invoke \rel;
+% Error
+invoke \dom[X, Y] R \rel \ran[X, Y] R;
+apply inPower;
+prenex;
+apply inCross2;
+prenex;
+% Command had no effect.
+instantiate x == first[X,Y] e, y == second[X,Y] e;
+rewrite;
+with enabled (inDom, inRan) rewrite;
+
+% ugh.  this is getting ugly; try another tack.
+
+undo;
+
+% make some lemmas for the main facts
+
+\begin{theorem}{thm1}[X,Y]
+  \forall R: X \rel Y @ (x,y) \in R \implies x \in \dom R
+\end{theorem}
+
+with enabled (inDom) rewrite;
+instantiate y\_\_0 == y;
+rewrite;
+use inSubset[x := (x,y), Y := R, Z := X \cross Y] ;
+rewrite;
+
+\begin{theorem}{thm2}[X,Y]
+  \forall R: X \rel Y @ (x,y) \in R \implies y \in \ran R
+\end{theorem}
+
+% this follows from thm1 by duality
+use thm1[Y,X][R := R\inv[X,Y], x := y, y := x] ;
+with normalization rewrite;
+% needs the "type" information early in the formula
+split R \in X \rel Y;
+rewrite;
+
+\begin{theorem}{thm3}[X,Y]
+  \forall R: X \rel Y @ e \in R \implies e \in X \cross Y
+\end{theorem}
+use inSubset[x := e, Y := R, Z := X \cross Y] ;
+with normalization rewrite;
+
+% back to the main theorem
+
+\begin{theorem}{relationInDomCrossRan}[X,Y]
+  \forall R: X \rel Y @ R \in (\dom R) \rel (\ran R)
+\end{theorem}
+
+invoke \dom[X, Y] R \rel \ran[X, Y] R;
+apply inPower;
+prenex;
+use thm3[X,Y];
+with normalization simplify;
+apply inCross2;
+prenex;
+instantiate x\_\_0 == x, y\_\_0 == y ;
+use thm1[X,Y];
+use thm2[X,Y];
+with normalization simplify;

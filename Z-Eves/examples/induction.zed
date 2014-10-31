@@ -1,0 +1,103 @@
+% Induction proofs in Z/EVES
+
+% Proof by induction for naturals, finite sets, and sequences is described in
+% the Toolkit documentation:
+% 
+%   We express the induction schemes using set variables.  In order to use
+%   induction to show $\forall n: \nat @ P(n)$ for some property $P$, one
+%   first forms the set $P\_values == \{~n: \nat | P(n)~\}$, then uses one
+%   of the induction theorems to show $\nat \subseteq P\_values$.  Rewriting
+%   this (using $subDef$ and $inPower$) gives the original goal.
+%   
+% The induction theorem for natural numbers is
+%   
+%   \begin{theorem}{natInduction}
+%     \forall S: \power \num
+%        |       0 \in S
+%          \land (\forall x: S @ x + 1 \in S)
+%        @ \nat \subseteq S
+%   \end{theorem}
+
+% Here is an example induction proof of
+%
+%  \forall n: \nat @ n * n \geq n
+%
+% by induction.  We start by declaring the set
+
+\begin{zed}
+  set1 == \{ n: \nat | n*n \geq n \}
+\end{zed}
+
+% (We need to do this because Z/EVES will not let you introduce a set
+% comprehension in the middle of a proof)
+
+% Now we use induction to show
+
+\begin{theorem}{lemma1}
+  \nat \subseteq set1
+\end{theorem}
+
+use natInduction [S := set1];
+invoke set1;
+prove;
+
+% Now the main theorem can be proved:
+
+\begin{theorem}{thm1}
+ \forall n: \nat @ n* n \geq n
+\end{theorem}
+
+use lemma1;
+invoke set1;
+rewrite;
+apply inPower;
+instantiate e == n;
+rewrite;
+
+% A bit awkward, but it works.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% A similar "induction" theorem is generated for free types
+
+\begin{zed}
+  T ::= nil | leaf \ldata \num \rdata | pair \ldata T \cross T \rdata
+\end{zed}
+
+% generates
+%
+% \begin{theorem}{T\$induction}
+%                x \in T \\
+%          \land X \in \power T \\
+%          \land nil \in X \\
+%          \land (\forall v0: \num @ leaf v0 \in X) \\
+%          \land (\forall v1: X; v2: X @ pair (v1, v2) \in X) \\
+%  \implies x \in X)
+% \end{theorem}
+
+% sample proof
+
+\begin{axdef}
+  flip: T \fun T
+\where
+\Label{rule flipNil} flip~nil = nil
+\\
+\Label{rule flipLeaf} \forall x: \num @ flip (leaf~x) = leaf~x
+\\
+\Label{rule flipPair} \forall x, y: T @ flip (pair (x,y)) =
+		pair (flip (y), flip (x))
+\end{axdef}
+
+% as before, we define the set we will use to induct:
+
+\begin{zed}
+  flipFlipSet == \{ x: T | flip (flip~x) = x \}
+\end{zed}
+
+\begin{theorem}{rule flipFlip}
+  \forall x: T @ flip (flip ~ x) = x
+\end{theorem}
+use T\$induction [X := flipFlipSet] ;
+invoke;
+prove;
+

@@ -1,0 +1,47 @@
+<Z-EVES-GUI-State version="1" index="0"><textItem history="2" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:1"><zed-box>  [User, Word] </zed-box></textItem
+><textItem history="3" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:2"><schema-box>LogSys<decl-part/>   password: User &rarrb;Word 
+  reg, active: &Fopf;User <ax-part/>  active &subeq;reg = <word style="roman"/>dom<word/> password </schema-box></textItem
+><textItem history="4" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:3"><schema-box>InitLogSys<decl-part/>   LogSys' <ax-part/>  password' = &empty;
+  active' = reg' = &empty;</schema-box></textItem
+><textItem history="5" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:4"><theorem-def>CanInitLogSys<ax-part/>   &exists;LogSys' &bullet; InitLogSys </theorem-def></textItem
+><textItem history="6" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:5"><schema-box>Register<decl-part/>   &Delta;LogSys 
+  u?: User; p?: Word <ax-part/>  password' = password &cup;{u? &rtarr;p? }
+  active' = active </schema-box></textItem
+><textItem history="7" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:6"><theorem-def>preRegister<ax-part/>    &forall;LogSys; u?: User; p?: Word           | u? &notin;reg           &bullet; <word style="roman"/>pre<word/> Register </theorem-def></textItem
+><textItem history="8" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:7"><theorem-def>RegisterAddsToReg<ax-part/>   Register &rArr;reg' = reg &cup;{u? }</theorem-def></textItem
+><textItem history="9" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:8"><schema-box>LogIn<decl-part/>   &Delta;LogSys 
+  u?: User 
+  p?: Word <ax-part/>  u? &isin;reg \active 
+  p? = password (u?) 
+  password' = password 
+  active' = active &cup;{u? }</schema-box></textItem
+><textItem history="10" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:9"><schema-box>LogOut<decl-part/>   &Delta;LogSys 
+  u?: User <ax-part/>  u? &isin;active 
+  password' = password 
+  active' = active \{u? }</schema-box></textItem
+><textItem history="11" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:10"><zed-box>   LogInOut &eqhat;LogIn &fatsemi;LogOut </zed-box></textItem
+><textItem history="12" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:11"><theorem-def>LogInOutisXi<ax-part/>   LogInOut &rArr;&Xi;LogSys </theorem-def></textItem
+><textItem history="13" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:12"><schema-box>Deregister<decl-part/>   &Delta;LogSys 
+  u?: User <ax-part/>  u? &notin;active 
+  password' = {u? }&vltrib;password 
+  active' = active </schema-box></textItem
+><textItem history="14" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:13"><zed-box>   RegDereg &eqhat;Register &fatsemi;Deregister </zed-box></textItem
+><textItem history="15" location="/home/eves/release/z-eves-2-2/examples/logsys.tex:14"><theorem-def>RegDeregIsXi<ax-part/>   &forall;RegDereg | u? &notin;reg &bullet; &Xi;LogSys </theorem-def></textItem
+><script name="preRegister"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+></script
+><script name="LogInOutisXi"><scriptItem number="2"><ztext> invoke</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>apply extensionality   to predicate (active = active &cup;[User] {u? }\{u? })</ztext></scriptItem
+><scriptItem number="5"><ztext>prove</ztext></scriptItem
+></script
+><script name="LogIn$domainCheck"><scriptItem number="2"><ztext> reduce</ztext></scriptItem
+></script
+><script name="RegisterAddsToReg"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+></script
+><script name="RegDeregIsXi"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+><scriptItem number="3"><ztext>apply ndresNothing</ztext></scriptItem
+><scriptItem number="4"><ztext>rewrite</ztext></scriptItem
+></script
+><script name="CanInitLogSys"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+></script
+></Z-EVES-GUI-State>

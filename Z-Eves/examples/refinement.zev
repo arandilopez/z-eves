@@ -1,0 +1,29 @@
+<Z-EVES-GUI-State version="1" index="0"><textItem history="2" location="/home/eves/release/z-eves-2-2/examples/refinement.tex:1"><schema-box>TicketA<decl-part/>   given: &Popf;&Zopf;</schema-box></textItem
+><textItem history="3" location="/home/eves/release/z-eves-2-2/examples/refinement.tex:2"><schema-box>InitA<decl-part/>   TicketA' <ax-part/>  given' = &empty;</schema-box></textItem
+><textItem history="4" location="/home/eves/release/z-eves-2-2/examples/refinement.tex:3"><schema-box>NewA<decl-part/>   &Delta;TicketA 
+  t!: &Zopf;<ax-part/>  t! &notin;given 
+  given' = given &cup;{t! }</schema-box></textItem
+><textItem history="5" location="/home/eves/release/z-eves-2-2/examples/refinement.tex:4"><schema-box>TicketC<decl-part/>   next: &Nopf;</schema-box></textItem
+><textItem history="6" location="/home/eves/release/z-eves-2-2/examples/refinement.tex:5"><schema-box>InitC<decl-part/>   TicketC' <ax-part/>  next' = 0 </schema-box></textItem
+><textItem history="7" location="/home/eves/release/z-eves-2-2/examples/refinement.tex:6"><schema-box>NewC<decl-part/>   &Delta;TicketC 
+  t!: &Zopf;<ax-part/>  t!  = next 
+  next' = next + 1 </schema-box></textItem
+><textItem history="8" location="/home/eves/release/z-eves-2-2/examples/refinement.tex:7"><schema-box>TicketAbs<decl-part/>   TicketA 
+  TicketC <ax-part/>  given = 0 ..(next-1) </schema-box></textItem
+><textItem history="9" location="/home/eves/release/z-eves-2-2/examples/refinement.tex:8"><theorem-def>initRefinement<ax-part/>   &forall;InitC &bullet; &exists;InitA &bullet; TicketAbs' </theorem-def></textItem
+><textItem history="10" location="/home/eves/release/z-eves-2-2/examples/refinement.tex:9"><theorem-def>newAbs1<ax-part/>   &forall;TicketAbs | <word style="roman"/>pre<word/> NewA &bullet; <word style="roman"/>pre<word/> NewC </theorem-def></textItem
+><textItem history="11" location="/home/eves/release/z-eves-2-2/examples/refinement.tex:10"><theorem-def>rangeExtension<ax-part/>   &forall;a, b: &Zopf;| a &leq;b &bullet; a ..b = (a ..b-1) &cup;{b }</theorem-def></textItem
+><textItem history="12" location="/home/eves/release/z-eves-2-2/examples/refinement.tex:11"><theorem-def>newAbs2<ax-part/>   &forall;NewC; TicketAbs | <word style="roman"/>pre<word/> NewA &bullet;   ( &exists;TicketA' &bullet; NewA &wedge;TicketAbs' ) </theorem-def></textItem
+><script name="initRefinement"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+></script
+><script name="newAbs1"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+></script
+><script name="newAbs2"><scriptItem number="2"><ztext> prove by reduce</ztext></scriptItem
+><scriptItem number="3"><ztext>use rangeExtension[a := 0, b := next] </ztext></scriptItem
+><scriptItem number="4"><ztext>prove</ztext></scriptItem
+></script
+><script name="rangeExtension"><scriptItem number="2"><ztext> apply extensionality</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>with normalization simplify</ztext></scriptItem
+></script
+></Z-EVES-GUI-State>

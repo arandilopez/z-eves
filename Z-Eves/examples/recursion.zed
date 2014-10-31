@@ -1,0 +1,170 @@
+% Here we show a proof of the consistency of a recursive function definition,
+% using the primitive recursion theorem.  The definition we wish to show
+% consistent is
+%
+% \begin{axdef}
+%   exp: \num \cross \nat \fun \num
+% \where
+%   \forall x: \num; n: \nat @ \\
+% \t1 exp(x,0) = 1 \\
+% \t1 \land exp(x,n+1) = x * exp(x,n),
+% \end{axdef}
+%
+% for which we need to show
+%
+% \begin{zed}
+% \exists exp: \num \cross \nat \fun \num @ \\
+% \t1 \forall x: \num; n: \nat @ \\
+% \t2 exp(x,0) = 1 \\
+% \t2 \land exp(x,n+1) = x * exp(x,n).
+% \end{zed}
+% 
+% We can prove that such a function exists by appealing to the general
+% Primitive Recursion Theorem:
+%
+% \begin{theorem}{generalPrimitiveRecursion}[Result,Parameter]
+%   \forall base: Parameter \fun Result;
+% 	step: Result \cross \nat \cross Parameter \fun Result @ \\ \t1
+%     \exists f: \nat \cross Parameter \fun Result @ \\ \t2
+%          \forall p: Parameter @ \\ \t3
+% 	    f(0,p) = base(p) \land
+% 	    ( \forall n: \nat @ f(n+1, p) = step(f(n, p),n,p)).
+% \end{theorem}
+% 
+% We need to define suitable base and step functions.  In the case at
+% hand, $Result$ and $Parameter$ are both $\num$, and we can define base
+% and step functions as follows:
+
+\begin{zed}
+  base == (\lambda p: \num @ 1)
+\also
+  step == (\lambda f: \num; n: \nat; p: \num @ p * f)
+\end{zed}
+
+% Before proceeding, we need some simple theorems about these functions;
+% Z/EVES unfortunately does not have any special knowledge about lambda
+% expressions.
+
+\begin{theorem}{grule baseType}
+  base \in \num \fun \num
+\end{theorem}
+
+with enabled (\_ \fun \_, \_ \pfun \_, \_ \rel \_) prove by reduce;
+
+\begin{theorem}{rule applyBase}
+  \forall x: \num @ base(x) = 1
+\end{theorem}
+
+use pairInFunction[\num, \num][f := base, y := 1];
+prove;
+prove by reduce;
+
+\begin{theorem}{grule stepType}
+  step \in \num \cross \nat \cross \num \fun \num
+\end{theorem}
+
+with enabled (\_ \fun \_, \_ \pfun \_, \_ \rel \_) prove by reduce;
+apply inCross3;
+prove;
+
+\begin{theorem}{rule applyStep}
+  \forall v, p: \num; n: \nat @ step(v, n, p) = p * v
+\end{theorem}
+
+use  pairInFunction[\num \cross \nat \cross \num, \num]
+       [f := step, x := (v, n, p), y := p * v];
+prove;
+prove by reduce;
+
+
+% Now we can try our goal:
+
+try \exists exp: \num \cross \nat \fun \num @
+     \forall x: \num; n: \nat @ exp(x,0) = 1 \land exp(x,n+1) = x * exp(x,n) ;
+use generalPrimitiveRecursion[\num,\num];
+prove;
+
+% A wrinkle: the function given by the primitive recursion theorem takes it
+% arguments in the reverse order to those of $exp$.
+
+\begin{zed}
+  swap == (\lambda x,y: \num @ (y,x))
+\end{zed}
+
+\begin{theorem}{grule swapType}
+  swap \in \num \cross \num \fun \num \cross \num
+\end{theorem}
+
+with enabled (\_ \fun \_, \_ \pfun \_, \_ \rel \_) prove by reduce;
+apply inCross2;
+prove;
+
+\begin{theorem}{rule applySwap}
+  \forall x, y: \num @ swap (x,y) = (y,x)
+\end{theorem}
+
+use pairInFunction[\num \cross \num, \num \cross \num]
+	[f := swap, x := (x,y), y := (y,x)];
+prove;
+prove by reduce;
+
+\begin{theorem}{expExists}
+\exists exp: \num \cross \nat \fun \num @ \\
+\t1 \forall x: \num; n: \nat @ \\
+\t2 exp(x,0) = 1 \\
+\t2 \land exp(x,n+1) = x * exp(x,n).
+\end{theorem}
+
+use generalPrimitiveRecursion[\num, \num];
+prove;
+instantiate exp == swap \comp f;
+prove;
+instantiate p == x, n\_\_0 == n;
+prove;
+apply domComp;
+prove;
+% not done
+
+undo;
+
+\begin{theorem}{rule swapImageCross}
+  \forall A, B: \power \num @
+     swap \limg A \cross B \rimg = B \cross A
+\end{theorem}
+apply extensionality;
+prove;
+apply inImage;
+prove;
+invoke swap;
+apply inCross2;
+prove;
+
+\begin{theorem}{rule invSwap}
+  swap \inv = swap
+\end{theorem}
+invoke swap;
+apply extensionality;
+prove;
+apply invDef;
+invoke (\_ \rel \_);
+prove;
+instantiate p == ((y\_\_0, x\_\_0), (x\_\_0, y\_\_0));
+prove;
+
+\begin{theorem}{expExists}
+\exists exp: \num \cross \nat \fun \num @ \\
+\t1 \forall x: \num; n: \nat @ \\
+\t2 exp(x,0) = 1 \\
+\t2 \land exp(x,n+1) = x * exp(x,n).
+\end{theorem}
+
+use generalPrimitiveRecursion[\num, \num];
+prove;
+instantiate exp == swap \comp f;
+prove;
+instantiate p == x, n\_\_0 == n;
+prove;
+apply domComp;
+prove;
+
+print status;

@@ -1,0 +1,127 @@
+% proofs for theorems about disjointness
+
+%  \mathrel \dj {\mbox{\rm dj}}
+\syndef{\dj}{inrel}{"dj"}
+
+\begin{gendef}[X]
+  \_ \dj \_: \power X \rel \power X
+\where
+\Label{disabled rule djDef}
+  \forall A, B: \power X @ A \dj B \iff A \cap B = \emptyset
+\end{gendef}
+
+\begin{theorem}{rule djNullRight}[X]
+  \forall A: \power X @ A \dj \{\}
+\end{theorem}
+prove;
+prove by reduce;
+apply djDef;
+prove;
+
+\begin{theorem}{rule djNullLeft}[X]
+  \forall A: \power X @ \{\} \dj A
+\end{theorem}
+apply djDef;
+prove;
+
+\begin{theorem}{djIsSymmetric}[X]
+  \forall A, B: \power X @ A \dj B \iff B \dj A
+\end{theorem}
+apply djDef;
+prove;
+
+\begin{theorem}{rule djCupLeft}[X]
+  \forall A, B, C: \power X @
+     A \cup B \dj C \iff A \dj C \land B \dj C
+\end{theorem}
+apply djDef;
+prove;
+
+print theorems about expression C \cap[X] (A \cup[X] B);
+apply distributeCapOverCupRight;
+prove;
+
+
+\begin{theorem}{rule djCupRight}[X]
+  \forall A, B, C: \power X @
+     A \dj B \cup C \iff A \dj B \land A \dj C
+\end{theorem}
+use djIsSymmetric[X][B := B \cup[X] C];
+prove;
+use djIsSymmetric[X];
+use djIsSymmetric[X][B := C];
+prove;
+
+\begin{theorem}{rule djUnitLeft}[X]
+  \forall x: X; A: \power X @ 
+    \{ x \} \dj A \iff \lnot x \in A
+\end{theorem}
+apply djDef;
+prove;
+
+
+\begin{theorem}{rule djUnitRight}[X]
+  \forall x: X; A: \power X @ 
+    A \dj \{ x \} \iff \lnot x \in A
+\end{theorem}
+apply djDef;
+prove;
+
+\begin{theorem}{djMonotone}[X]
+  \forall A, A', B, B': \power X
+        | A \dj B \land A' \subseteq A \land B' \subseteq B
+        @ A' \dj B'
+\end{theorem}
+apply djDef;
+prove;
+apply extensionality;
+prove;
+instantiate x\_\_0 == x;
+prove;
+split x \in B';
+prove;
+
+
+\begin{theorem}{rule djSelf}[X]
+  \forall A: \power X @ A \dj A \iff A = \emptyset
+\end{theorem}
+apply djDef;
+prove;
+apply capSubsetLeft;
+rewrite;
+
+
+\begin{theorem}{djFact}[X]
+  \forall A, B: \power X; x: X
+        | A \dj B \land x \in A
+        @ \lnot x \in B
+\end{theorem}
+apply djDef;
+prove;
+apply extensionality;
+instantiate x\_\_0 == x;
+prove;
+
+% we have enough to calculate:
+
+\begin{theorem}{calculation1}
+  \{ 1, 2, 3 \} \dj \{ 4 \}
+\end{theorem}
+prove;
+
+\begin{theorem}{calculation2}
+  \{ 1, 2, 3 \} \dj 10 \upto 20
+\end{theorem}
+prove;
+
+\begin{theorem}{calculation3}
+ \lnot \{ 1, 2, 3 \} \dj 2 \upto 20
+\end{theorem}
+prove;
+
+\begin{theorem}{calculation4}
+ \nat \dj \{ -3, -2, -1 \}
+\end{theorem}
+prove;
+
+print status;

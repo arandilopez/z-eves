@@ -1,0 +1,98 @@
+% A fairly trivial refinement example
+
+% abstract system
+
+\begin{schema}{TicketA}
+  given: \power \num
+\end{schema}
+
+\begin{schema}{InitA}
+  TicketA'
+\where
+  given' = \emptyset
+\end{schema}
+
+\begin{schema}{NewA}
+  \Delta TicketA \\
+  t!: \num
+\where
+  t! \notin given \\
+  given' = given \cup \{ t! \}
+\end{schema}
+
+% concrete system
+
+\begin{schema}{TicketC}
+  next: \nat
+\end{schema}
+
+\begin{schema}{InitC}
+  TicketC'
+\where
+  next' = 0
+\end{schema}
+
+\begin{schema}{NewC}
+  \Delta TicketC \\
+  t!: \num
+\where
+  t!  = next \\
+  next' = next + 1
+\end{schema}
+
+% Coupling Invariant
+
+\begin{schema}{TicketAbs}
+  TicketA \\
+  TicketC
+\where
+  given = 0 \upto (next-1)
+\end{schema}
+
+% initialization:
+
+\begin{theorem}{initRefinement}
+  \forall InitC @ \exists InitA @ TicketAbs'
+\end{theorem}
+prove by reduce;
+
+% new
+
+\begin{theorem}{newAbs1}
+  \pre NewA \land TicketAbs \implies \pre NewC
+\end{theorem}
+prove by reduce;
+
+\begin{theorem}{newabs2}
+  \pre NewA \land NewC \land TicketAbs
+\implies
+  ( \exists TicketA' @ NewA \land TicketAbs' )
+\end{theorem}
+
+prove by reduce;
+apply extensionality;
+prove;
+% ugh!
+
+undo;
+
+
+\begin{theorem}{rangeExtension}
+  \forall a, b: \num | a \leq b @ a \upto b = (a \upto b-1) \cup \{ b \}
+\end{theorem}
+apply extensionality;
+prove;
+with normalization simplify;
+
+
+\begin{theorem}{newabs2}
+  \pre NewA \land NewC \land TicketAbs
+\implies
+  ( \exists TicketA' @ NewA \land TicketAbs' )
+\end{theorem}
+prove by reduce;
+use rangeExtension[a := 0, b := next] ;
+prove;
+
+print status;
+

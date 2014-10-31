@@ -1,0 +1,47 @@
+\documentstyle[zed,z-eves]{article}
+\begin{document}
+
+\begin{zed}
+[PERSON]
+\end{zed}
+
+\begin{schema}{Personnel}
+employees: \power PERSON \\
+boss\_of: PERSON \pfun PERSON \\
+salary: PERSON \pfun \nat
+\where
+\dom salary = employees
+\also
+\forall e: employees @
+  salary(e) < salary(boss\_of~e)
+\end{schema}
+
+\begin{schema}{AddEmployee}
+\Delta Personnel \\
+new?: PERSON \\
+salary?: \nat \\
+boss?: PERSON
+\where
+new? \notin employees
+\also
+boss? \in employees
+\also
+boss\_of' = boss\_of \oplus \{ new? \mapsto boss? \}
+\also
+salary' = salary \oplus \{ new? \mapsto salary? \}
+\end{schema}
+
+\begin{theorem}{employees\_after\_AddEmployee}
+  \forall AddEmployee @ employees' = employees \cup \{ new? \}
+\end{theorem}
+
+\begin{schema}{DeleteEmployee}
+\Delta Personnel \\
+who?: PERSON
+\where
+employees' = employees \setminus \{ who? \}
+\also
+salary' = who? \ndres salary
+\end{schema}
+
+\end{document}

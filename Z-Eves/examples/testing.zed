@@ -1,0 +1,49 @@
+% Bank account example, for "test cases" section of the User's Guide
+
+% State
+
+\begin{schema}{Account}
+  balance: \num
+\end{schema}
+
+% Initialization
+
+\begin{schema}{OpenAccount}
+  Account \\
+\where
+  balance = 0
+\end{schema}
+
+% Operations
+
+\begin{schema}{Deposit}
+  \Delta Account \\
+  amount?: \nat
+\where
+  balance' = balance + amount?
+\end{schema}
+
+\begin{schema}{Withdraw}
+  \Delta Account \\
+  amount?: \nat \\
+\where
+  balance' = balance -  amount?
+\end{schema}
+
+% Testing
+
+\begin{zed}
+  Test1 \defs OpenAccount' \semi Deposit[amount? := 100] \\
+  Test2 \defs Test1 \semi Withdraw[amount? := 50] \\
+  Test3 \defs OpenAccount' \semi Deposit[amount? := 1000]
+	\semi Deposit[amount? := 20] \semi Withdraw[amount? := 500]
+\end{zed}
+
+try Test1;
+prove by reduce;
+
+try Test2;
+prove by reduce;
+
+try Test3;
+prove by reduce;

@@ -1,0 +1,271 @@
+.TH PYTHON "10 April, 1998"
+.SH NAME
+python \- an interpreted, interactive, object-oriented programming language
+.SH SYNOPSIS
+.B python
+[
+.B \-d
+]
+[
+.B \-i
+]
+[
+.B \-O
+]
+[
+.B \-S
+]
+[
+.B \-t
+]
+[
+.B \-u
+]
+[
+.B \-v
+]
+[
+.B \-x
+]
+[
+.B \-X
+]
+.br
+       [
+.B \-c
+.I command
+|
+.I script
+|
+\-
+]
+[
+.I arguments
+]
+.SH DESCRIPTION
+Python is an interpreted, interactive, object-oriented programming
+language that combines remarkable power with very clear syntax.
+For an introduction to programming in Python you are referred to the
+Python Tutorial.
+The Python Library Reference documents built-in and standard types,
+constants, functions and modules.
+Finally, the Python Reference Manual describes the syntax and
+semantics of the core language in (perhaps too) much detail.
+.PP
+Python's basic power can be extended with your own modules written in
+C or C++.
+On most systems such modules may be dynamically loaded.
+Python is also adaptable as an extension language for existing
+applications.
+See the internal documentation for hints.
+.SH COMMAND LINE OPTIONS
+.TP
+.B \-d
+Turn on parser debugging output (for wizards only, depending on
+compilation options).
+.TP
+.B \-i
+When a script is passed as first argument or the \fB\-c\fP option is
+used, enter interactive mode after executing the script or the
+command.  It does not read the $PYTHONSTARTUP file.  This can be
+useful to inspect global variables or a stack trace when a script
+raises an exception.
+.TP
+.B \-O
+Turn on basic optimizations.  This changes the filename extension for
+compiled (bytecode) files from
+.I .pyc
+to
+.I pyo.
+.TP
+.B \-S
+Disable the import of the module
+.I site
+and the site-dependent manipulations of
+.I sys.path
+that it entails.
+.TP
+.B \-t
+Issue a warning when a source file mixes tabs and spaces for
+indentation in a way that makes it depend on the worth of a tab
+expressed in spaces.  Issue an error when the option is given twice.
+.TP
+.B \-u
+Force stdin, stdout and stderr to be totally unbuffered.
+.TP
+.B \-v
+Print a message each time a module is initialized, showing the place
+(filename or built-in module) from which it is loaded.
+.TP
+.B \-x
+Skip the first line of the source.  This is intended for a DOS
+specific hack only.  Warning: the line numbers in error messages will
+be off by one!
+.TP
+.B \-X
+Make the standard exceptions strings instead of classes.
+Use for backward compatibility with old code only.
+.TP
+.BI "\-c " command
+Specify the command to execute (see next section).
+This terminates the option list (following options are passed as
+arguments to the command).
+.SH INTERPRETER INTERFACE
+The interpreter interface resembles that of the UNIX shell: when
+called with standard input connected to a tty device, it prompts for
+commands and executes them until an EOF is read; when called with a
+file name argument or with a file as standard input, it reads and
+executes a
+.I script
+from that file;
+when called with
+.B \-c
+.I command,
+it executes the Python statement(s) given as
+.I command.
+Here
+.I command
+may contain multiple statements separated by newlines.
+Leading whitespace is significant in Python statements!
+In non-interactive mode, the entire input is parsed befored it is
+executed.
+.PP
+If available, the script name and additional arguments thereafter are
+passed to the script in the Python variable
+.I sys.argv ,
+which is a list of strings (you must first
+.I import sys
+to be able to access it).
+If no script name is given,
+.I sys.argv
+is empty; if
+.B \-c
+is used,
+.I sys.argv[0]
+contains the string
+.I '-c'.
+Note that options interpreted by the Python interpreter itself
+are not placed in
+.I sys.argv.
+.PP
+In interactive mode, the primary prompt is `>>>'; the second prompt
+(which appears when a command is not complete) is `...'.
+The prompts can be changed by assignment to
+.I sys.ps1
+or
+.I sys.ps2.
+The interpreter quits when it reads an EOF at a prompt.
+When an unhandled exception occurs, a stack trace is printed and
+control returns to the primary prompt; in non-interactive mode, the
+interpreter exits after printing the stack trace.
+The interrupt signal raises the
+.I Keyboard\%Interrupt
+exception; other UNIX signals are not caught (except that SIGPIPE is
+sometimes ignored, in favor of the
+.I IOError
+exception).  Error messages are written to stderr.
+.SH FILES AND DIRECTORIES
+These are subject to difference depending on local installation
+conventions:
+.IP /usr/local/bin/python
+Recommended location of the interpreter.
+.IP /usr/local/lib/python<version>
+Recommended location of the directory containing the standard modules.
+.SH ENVIRONMENT VARIABLES
+.IP PYTHONHOME
+Change the location of the standard Python libraries.  By default, the
+libraries are searched in <prefix>/lib/python<version> and
+<exec_prefix>/lib/python<version>, where <prefix> and <exec_prefix>
+are installation-dependent directories, both defaulting to
+/usr/local.  When $PYTHONHOME is set to a single directory, its value
+replaces both <prefix> and <exec_prefix>.  To specify different values
+for these, set $PYTHONHOME to <prefix>:<exec_prefix>.
+.IP PYTHONPATH
+Augments the default search path for module files.
+The format is the same as the shell's $PATH: one or more directory
+pathnames separated by colons.
+Non-existant directories are silently ignored.
+The default search path is installation dependent, but generally
+begins with <prefix>/lib/python<version> (see PYTHONHOME below).
+The default search path is always appended to $PYTHONPATH.
+If a script argument is given, the directory containing the script is
+inserted in the path in front of $PYTHONPATH.
+The search path can be manipulated from within a Python program as the
+variable
+.I sys.path .
+.IP PYTHONSTARTUP
+If this is the name of a readable file, the Python commands in that
+file are executed before the first prompt is displayed in interactive
+mode.
+The file is executed in the same name space where interactive commands
+are executed so that objects defined or imported in it can be used
+without qualification in the interactive session.
+You can also change the prompts
+.I sys.ps1
+and
+.I sys.ps2
+in this file.
+.IP PYTHONDEBUG
+If this is set to a non-empty string it is equivalent to specifying
+the \fB\-d\fP option.
+.IP PYTHONINSPECT
+If this is set to a non-empty string it is equivalent to specifying
+the \fB\-i\fP option.
+.IP PYTHONUNBUFFERED
+If this is set to a non-empty string it is equivalent to specifying
+the \fB\-u\fP option.
+.IP PYTHONVERBOSE
+If this is set to a non-empty string it is equivalent to specifying
+the \fB\-v\fP option.
+.SH SEE ALSO
+Python Tutorial
+.br
+Python Library Reference
+.br
+Python Reference Manual
+.SH AUTHOR
+.nf
+Guido van Rossum
+CNRI
+1895 Preston White Drive
+Reston, VA 20191
+USA
+.PP
+E-mail: guido@cnri.reston.va.us, guido@python.org
+.fi
+.PP
+And a cast of thousands.
+.SH INTERNET RESOURCES
+Web site: http://www.python.org
+.br
+FTP site: ftp://ftp.python.org
+.br
+Newsgroup: comp.lang.python
+.SH COPYRIGHT
+Copyright 1991-1995 by Stichting Mathematisch Centrum, Amsterdam,
+The Netherlands.
+.IP " "
+All Rights Reserved
+.PP
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation, and that the names of Stichting Mathematisch
+Centrum or CWI or Corporation for National Research Initiatives or
+CNRI not be used in advertising or publicity pertaining to
+distribution of the software without specific, written prior
+permission.
+
+While CWI is the initial source for this software, a modified version
+is made available by the Corporation for National Research Initiatives
+(CNRI) at the Internet address ftp://ftp.python.org.
+
+STICHTING MATHEMATISCH CENTRUM AND CNRI DISCLAIM ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH
+CENTRUM OR CNRI BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL
+DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.

@@ -1,0 +1,133 @@
+\documentclass{article}
+\usepackage{z-eves}
+\begin{document}
+Logging System, suggested by Potter, Sinclair, and Till, example 6.6.
+
+\begin{zed}
+ [User, Word]
+\end{zed}
+
+\begin{schema}{LogSys}
+  password: User \pfun Word \\
+  reg, active: \finset User
+\where
+  active \subseteq reg = \dom password
+\end{schema}
+
+\begin{schema}{InitLogSys}
+  LogSys'
+\where
+  password' = \emptyset \\
+  active' = reg' = \emptyset
+\end{schema}
+
+The next theorem shows the initial state schema (and thus the state schema) is
+satisfiable:
+
+\begin{theorem}{CanInitLogSys}
+  \exists LogSys' @ InitLogSys
+\end{theorem}
+\begin{zproof}
+prove by reduce;
+\end{zproof}
+
+\begin{schema}{Register}
+  \Delta LogSys \\
+  u?: User; p?: Word
+\where
+  password' = password \cup \{ u? \mapsto p? \} \\
+  active' = active
+\end{schema}
+
+Schema $Register$ does not explicitly mention its precondition.  We can
+show it is possible to register any
+not-already-registered user:
+
+\begin{theorem}{preRegister}
+   \forall LogSys; u?: User; p?: Word
+          | u? \notin reg
+          @ \pre Register
+\end{theorem}
+
+\begin{zproof}
+prove by reduce;
+\end{zproof}
+
+Here is a simple "sanity check" theorem:
+\begin{theorem}{RegisterAddsToReg}
+  Register \implies reg' = reg \cup \{ u? \}
+\end{theorem}
+
+\begin{zproof}
+prove by reduce;
+\end{zproof}
+
+\begin{schema}{LogIn}
+  \Delta LogSys \\
+  u?: User \\
+  p?: Word
+\where
+  u? \in reg \setminus active \\
+  p? = password (u?) \\
+  password' = password \\
+  active' = active \cup \{ u? \}
+\end{schema}
+% domain condition:
+\begin{zproof}[LogIn\$domainCheck]
+reduce;
+\end{zproof}
+
+\begin{schema}{LogOut}
+  \Delta LogSys \\
+  u?: User
+\where
+  u? \in active \\
+  password' = password \\
+  active' = active \setminus \{ u? \}
+\end{schema}
+
+Another sanity check: logging in and then out leaves the system state
+unchanged.
+
+\begin{zed}
+  LogInOut \defs LogIn \semi LogOut
+\end{zed}
+
+\begin{theorem}{LogInOutisXi}
+  LogInOut \implies \Xi LogSys
+\end{theorem}
+
+\begin{zproof}
+invoke;
+prove;
+apply extensionality
+  to predicate (active = active \cup[User] \{ u? \} \setminus \{ u? \});
+prove;
+\end{zproof}
+
+\begin{schema}{Deregister}
+  \Delta LogSys \\
+  u?: User
+\where
+  u? \notin active \\
+  password' = \{ u? \} \ndres password \\
+  active' = active
+\end{schema}
+
+Another simple sanity check:
+
+\begin{zed}
+  RegDereg \defs Register \semi Deregister
+\end{zed}
+
+\begin{theorem}{RegDeregIsXi}
+  \forall RegDereg | u? \notin reg @ \Xi LogSys
+\end{theorem}
+
+\begin{zproof}
+prove by reduce;
+apply ndresNothing;
+rewrite;
+\end{zproof}
+
+\end{document}

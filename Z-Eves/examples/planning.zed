@@ -1,0 +1,131 @@
+% Proof planning examples
+
+% (Q \rres S) \comp R = Q \comp (S \dres R)
+% proof
+% Q \rres S = Q \comp \id S,  by compIdRight;
+% (Q \rres S) \comp R = (Q \comp \id S) \comp R,  by Leibniz
+% (Q \comp \id S) \comp R = Q \comp (\id S \comp R)
+% \id S \comp R = S \dres R, by compIdLeft;
+% Q \comp (\id S \comp R) = Q \comp (S \dres R), by Leibniz
+% QED.
+
+\begin{theorem}{example}[X,Y,Z]
+  \forall Q: X \rel Y; R: Y \rel Z; S: \power Y @
+    (Q \rres S) \comp R = Q \comp (S \dres R)
+\end{theorem}
+use compIdRight[X,Y][R := Q];
+use compAssociates[X,Y,Y,Z][P := Q, Q := \id S];
+use compIdLeft[Y,Z];
+prove;
+
+% injSizeDomRan:
+%
+%   \forall g: X \finj Y @ \#(\dom g) = \#(\ran g)
+%
+% proof:
+%   suppose g \in X \finj Y.
+%     then \dom g \in \finset X \land \ran g \in \finset Y \land
+% 	\# (ran g) \leq \# (\dom g) \leq \#g
+% 		    by finiteFunction[X,Y][f := g] \\
+%     then g\inv \in Y \ffun X 
+%     then \# (dom g) \leq \# (\ran g)  by finiteFunction[Y,X][f := g\inv]
+% 
+
+\begin{theorem}{step4Lemma}[X,Y]
+  \forall g: X \finj Y @ g\inv \in Y \ffun X
+\end{theorem}
+
+\begin{theorem}{injSizeDomRan}[X,Y]
+    \forall g: X \finj Y @ \# (\dom g) = \# (\ran g)
+\end{theorem}
+use finiteFunction[X, Y][f := g];
+use step4Lemma[X,Y];
+use finiteFunction[Y, X][f := g \inv[X, Y]];
+prove;
+
+
+try lemma step4Lemma;
+use functionFinite[Y, X][f := g \inv[X, Y], A := Y, B := X];
+use finiteFunction[X, Y][f := g];
+prove;
+
+
+%
+% (\exists x: S @ x \notin T) \implies \lnot S \subseteq T
+%
+% proof:
+%  assume (\exists x: S @ x \notin T)
+%  choose such an x.
+%  (so assume x \in S and x \notin T)
+%  S \subseteq T \iff (\forall e: S @ e \in T), by subDef
+%  putting e = x shows S \subseteq T is false.
+
+
+\begin{theorem}{example2}
+  \forall S, T: \power \num @
+    (\exists x: S @ x \notin T) \implies \lnot S \subseteq T
+\end{theorem}
+% ... choose such an x
+prenex;
+% ... by subdef ...
+use subDef[\num][A := S, B := T];
+% (subDef uses bound variable "x" instead of "e", and Z/EVES
+% renamed it to "x\_\_0".  So, "put e = x" is...
+instantiate x\_\_0 == x;
+% done?
+simplify;
+% oops.  why not?
+rearrange;
+simplify;
+% need x \notin T \implies \lnot x \in T.  Rewriting gets that
+prove;
+% done!
+% we can clean up the proof a bit, using "prove" right after the instantiation
+back 3;
+prove;
+
+print proof summary;
+
+% relationInDomCrossRan
+
+\begin{theorem}{thm1}[X,Y]
+  \forall R: X \rel Y @ e \in R \implies e \in X \cross Y
+\end{theorem}
+prove;
+
+\begin{theorem}{thm2}[X,Y]
+  \forall R: X \rel Y @ (x,y) \in R \implies x \in \dom R
+\end{theorem}
+
+with enabled (inDom) rewrite;
+instantiate y\_\_0 == y;
+prove;
+use thm1[X, Y][e := (x, y)];
+prove;
+
+\begin{theorem}{thm3}[X,Y]
+  \forall R: X \rel Y @ (x,y) \in R \implies y \in \ran R
+\end{theorem}
+
+% this follows from thm2 by duality
+use thm2[Y,X][R := R\inv[X,Y], x := y, y := x] ;
+prove;
+
+
+% back to the main theorem
+
+\begin{theorem}{relationInDomCrossRan}[X,Y]
+  \forall R: X \rel Y @ R \in (\dom R) \rel (\ran R)
+\end{theorem}
+
+invoke \dom[X, Y] R \rel \ran[X, Y] R;
+apply inPower;
+prenex;
+use thm1[X, Y];
+apply inCross2 to predicate e \in X \cross Y;
+prove;
+use thm2[X, Y];
+use thm3[X, Y];
+prove;
+
+print status;

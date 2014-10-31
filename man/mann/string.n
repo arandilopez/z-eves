@@ -1,0 +1,366 @@
+'\"
+'\" Copyright (c) 1993 The Regents of the University of California.
+'\" Copyright (c) 1994-1996 Sun Microsystems, Inc.
+'\"
+'\" See the file "license.terms" for information on usage and redistribution
+'\" of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+'\" 
+'\" RCS: @(#) $Id: string.n,v 1.2 1998/09/14 18:39:55 stanton Exp $
+'\" 
+'\" The definitions below are for supplemental macros used in Tcl/Tk
+'\" manual entries.
+'\"
+'\" .AP type name in/out ?indent?
+'\"	Start paragraph describing an argument to a library procedure.
+'\"	type is type of argument (int, etc.), in/out is either "in", "out",
+'\"	or "in/out" to describe whether procedure reads or modifies arg,
+'\"	and indent is equivalent to second arg of .IP (shouldn't ever be
+'\"	needed;  use .AS below instead)
+'\"
+'\" .AS ?type? ?name?
+'\"	Give maximum sizes of arguments for setting tab stops.  Type and
+'\"	name are examples of largest possible arguments that will be passed
+'\"	to .AP later.  If args are omitted, default tab stops are used.
+'\"
+'\" .BS
+'\"	Start box enclosure.  From here until next .BE, everything will be
+'\"	enclosed in one large box.
+'\"
+'\" .BE
+'\"	End of box enclosure.
+'\"
+'\" .CS
+'\"	Begin code excerpt.
+'\"
+'\" .CE
+'\"	End code excerpt.
+'\"
+'\" .VS ?version? ?br?
+'\"	Begin vertical sidebar, for use in marking newly-changed parts
+'\"	of man pages.  The first argument is ignored and used for recording
+'\"	the version when the .VS was added, so that the sidebars can be
+'\"	found and removed when they reach a certain age.  If another argument
+'\"	is present, then a line break is forced before starting the sidebar.
+'\"
+'\" .VE
+'\"	End of vertical sidebar.
+'\"
+'\" .DS
+'\"	Begin an indented unfilled display.
+'\"
+'\" .DE
+'\"	End of indented unfilled display.
+'\"
+'\" .SO
+'\"	Start of list of standard options for a Tk widget.  The
+'\"	options follow on successive lines, in four columns separated
+'\"	by tabs.
+'\"
+'\" .SE
+'\"	End of list of standard options for a Tk widget.
+'\"
+'\" .OP cmdName dbName dbClass
+'\"	Start of description of a specific option.  cmdName gives the
+'\"	option's name as specified in the class command, dbName gives
+'\"	the option's name in the option database, and dbClass gives
+'\"	the option's class in the option database.
+'\"
+'\" .UL arg1 arg2
+'\"	Print arg1 underlined, then print arg2 normally.
+'\"
+'\" RCS: @(#) $Id: man.macros,v 1.2 1998/09/14 18:39:54 stanton Exp $
+'\"
+'\"	# Set up traps and other miscellaneous stuff for Tcl/Tk man pages.
+.if t .wh -1.3i ^B
+.nr ^l \n(.l
+.ad b
+'\"	# Start an argument description
+.de AP
+.ie !"\\$4"" .TP \\$4
+.el \{\
+.   ie !"\\$2"" .TP \\n()Cu
+.   el          .TP 15
+.\}
+.ie !"\\$3"" \{\
+.ta \\n()Au \\n()Bu
+\&\\$1	\\fI\\$2\\fP	(\\$3)
+.\".b
+.\}
+.el \{\
+.br
+.ie !"\\$2"" \{\
+\&\\$1	\\fI\\$2\\fP
+.\}
+.el \{\
+\&\\fI\\$1\\fP
+.\}
+.\}
+..
+'\"	# define tabbing values for .AP
+.de AS
+.nr )A 10n
+.if !"\\$1"" .nr )A \\w'\\$1'u+3n
+.nr )B \\n()Au+15n
+.\"
+.if !"\\$2"" .nr )B \\w'\\$2'u+\\n()Au+3n
+.nr )C \\n()Bu+\\w'(in/out)'u+2n
+..
+.AS Tcl_Interp Tcl_CreateInterp in/out
+'\"	# BS - start boxed text
+'\"	# ^y = starting y location
+'\"	# ^b = 1
+.de BS
+.br
+.mk ^y
+.nr ^b 1u
+.if n .nf
+.if n .ti 0
+.if n \l'\\n(.lu\(ul'
+.if n .fi
+..
+'\"	# BE - end boxed text (draw box now)
+.de BE
+.nf
+.ti 0
+.mk ^t
+.ie n \l'\\n(^lu\(ul'
+.el \{\
+.\"	Draw four-sided box normally, but don't draw top of
+.\"	box if the box started on an earlier page.
+.ie !\\n(^b-1 \{\
+\h'-1.5n'\L'|\\n(^yu-1v'\l'\\n(^lu+3n\(ul'\L'\\n(^tu+1v-\\n(^yu'\l'|0u-1.5n\(ul'
+.\}
+.el \}\
+\h'-1.5n'\L'|\\n(^yu-1v'\h'\\n(^lu+3n'\L'\\n(^tu+1v-\\n(^yu'\l'|0u-1.5n\(ul'
+.\}
+.\}
+.fi
+.br
+.nr ^b 0
+..
+'\"	# VS - start vertical sidebar
+'\"	# ^Y = starting y location
+'\"	# ^v = 1 (for troff;  for nroff this doesn't matter)
+.de VS
+.if !"\\$2"" .br
+.mk ^Y
+.ie n 'mc \s12\(br\s0
+.el .nr ^v 1u
+..
+'\"	# VE - end of vertical sidebar
+.de VE
+.ie n 'mc
+.el \{\
+.ev 2
+.nf
+.ti 0
+.mk ^t
+\h'|\\n(^lu+3n'\L'|\\n(^Yu-1v\(bv'\v'\\n(^tu+1v-\\n(^Yu'\h'-|\\n(^lu+3n'
+.sp -1
+.fi
+.ev
+.\}
+.nr ^v 0
+..
+'\"	# Special macro to handle page bottom:  finish off current
+'\"	# box/sidebar if in box/sidebar mode, then invoked standard
+'\"	# page bottom macro.
+.de ^B
+.ev 2
+'ti 0
+'nf
+.mk ^t
+.if \\n(^b \{\
+.\"	Draw three-sided box if this is the box's first page,
+.\"	draw two sides but no top otherwise.
+.ie !\\n(^b-1 \h'-1.5n'\L'|\\n(^yu-1v'\l'\\n(^lu+3n\(ul'\L'\\n(^tu+1v-\\n(^yu'\h'|0u'\c
+.el \h'-1.5n'\L'|\\n(^yu-1v'\h'\\n(^lu+3n'\L'\\n(^tu+1v-\\n(^yu'\h'|0u'\c
+.\}
+.if \\n(^v \{\
+.nr ^x \\n(^tu+1v-\\n(^Yu
+\kx\h'-\\nxu'\h'|\\n(^lu+3n'\ky\L'-\\n(^xu'\v'\\n(^xu'\h'|0u'\c
+.\}
+.bp
+'fi
+.ev
+.if \\n(^b \{\
+.mk ^y
+.nr ^b 2
+.\}
+.if \\n(^v \{\
+.mk ^Y
+.\}
+..
+'\"	# DS - begin display
+.de DS
+.RS
+.nf
+.sp
+..
+'\"	# DE - end display
+.de DE
+.fi
+.RE
+.sp
+..
+'\"	# SO - start of list of standard options
+.de SO
+.SH "STANDARD OPTIONS"
+.LP
+.nf
+.ta 4c 8c 12c
+.ft B
+..
+'\"	# SE - end of list of standard options
+.de SE
+.fi
+.ft R
+.LP
+See the \\fBoptions\\fR manual entry for details on the standard options.
+..
+'\"	# OP - start of full description for a single option
+.de OP
+.LP
+.nf
+.ta 4c
+Command-Line Name:	\\fB\\$1\\fR
+Database Name:	\\fB\\$2\\fR
+Database Class:	\\fB\\$3\\fR
+.fi
+.IP
+..
+'\"	# CS - begin code excerpt
+.de CS
+.RS
+.nf
+.ta .25i .5i .75i 1i
+..
+'\"	# CE - end code excerpt
+.de CE
+.fi
+.RE
+..
+.de UL
+\\$1\l'|0\(ul'\\$2
+..
+.TH string n 7.6 Tcl "Tcl Built-In Commands"
+.BS
+'\" Note:  do not modify the .SH NAME line immediately below!
+.SH NAME
+string \- Manipulate strings
+.SH SYNOPSIS
+\fBstring \fIoption arg \fR?\fIarg ...?\fR
+.BE
+
+.SH DESCRIPTION
+.PP
+Performs one of several string operations, depending on \fIoption\fR.
+The legal \fIoption\fRs (which may be abbreviated) are:
+.TP
+\fBstring compare \fIstring1 string2\fR
+Perform a character-by-character comparison of strings \fIstring1\fR and
+\fIstring2\fR in the same way as the C \fBstrcmp\fR procedure.  Return
+\-1, 0, or 1, depending on whether \fIstring1\fR is lexicographically
+less than, equal to, or greater than \fIstring2\fR.
+.TP
+\fBstring first \fIstring1 string2\fR
+Search \fIstring2\fR for a sequence of characters that exactly match
+the characters in \fIstring1\fR.  If found, return the index of the
+first character in the first such match within \fIstring2\fR.  If not
+found, return \-1.
+.TP
+\fBstring index \fIstring charIndex\fR
+Returns the \fIcharIndex\fR'th character of the \fIstring\fR
+argument.  A \fIcharIndex\fR of 0 corresponds to the first
+character of the string.
+If \fIcharIndex\fR is less than 0 or greater than
+or equal to the length of the string then an empty string is
+returned.
+.TP
+\fBstring last \fIstring1 string2\fR
+Search \fIstring2\fR for a sequence of characters that exactly match
+the characters in \fIstring1\fR.  If found, return the index of the
+first character in the last such match within \fIstring2\fR.  If there
+is no match, then return \-1.
+.TP
+\fBstring length \fIstring\fR
+Returns a decimal string giving the number of characters in \fIstring\fR.
+.TP
+\fBstring match \fIpattern\fR \fIstring\fR
+See if \fIpattern\fR matches \fIstring\fR; return 1 if it does, 0
+if it doesn't.  Matching is done in a fashion similar to that
+used by the C-shell.  For the two strings to match, their contents
+must be identical except that the following special sequences
+may appear in \fIpattern\fR:
+.RS
+.IP \fB*\fR 10
+Matches any sequence of characters in \fIstring\fR,
+including a null string.
+.IP \fB?\fR 10
+Matches any single character in \fIstring\fR.
+.IP \fB[\fIchars\fB]\fR 10
+Matches any character in the set given by \fIchars\fR.  If a sequence
+of the form
+\fIx\fB\-\fIy\fR appears in \fIchars\fR, then any character
+between \fIx\fR and \fIy\fR, inclusive, will match.
+.IP \fB\e\fIx\fR 10
+Matches the single character \fIx\fR.  This provides a way of
+avoiding the special interpretation of the characters
+\fB*?[]\e\fR in \fIpattern\fR.
+.RE
+.TP
+\fBstring range \fIstring first last\fR
+Returns a range of consecutive characters from \fIstring\fR, starting
+with the character whose index is \fIfirst\fR and ending with the
+character whose index is \fIlast\fR. An index of 0 refers to the
+first character of the string.  
+An index of \fBend\fR (or any
+abbreviation of it) refers to the last character of the string.
+If \fIfirst\fR is less than zero then it is treated as if it were zero, and
+if \fIlast\fR is greater than or equal to the length of the string then
+it is treated as if it were \fBend\fR.  If \fIfirst\fR is greater than
+\fIlast\fR then an empty string is returned.
+.TP
+\fBstring tolower \fIstring\fR
+Returns a value equal to \fIstring\fR except that all upper case
+letters have been converted to lower case.
+.TP
+\fBstring toupper \fIstring\fR
+Returns a value equal to \fIstring\fR except that all lower case
+letters have been converted to upper case.
+.TP
+\fBstring trim \fIstring\fR ?\fIchars\fR?
+Returns a value equal to \fIstring\fR except that any leading
+or trailing characters from the set given by \fIchars\fR are
+removed.
+If \fIchars\fR is not specified then white space is removed
+(spaces, tabs, newlines, and carriage returns).
+.TP
+\fBstring trimleft \fIstring\fR ?\fIchars\fR?
+Returns a value equal to \fIstring\fR except that any
+leading characters from the set given by \fIchars\fR are
+removed.
+If \fIchars\fR is not specified then white space is removed
+(spaces, tabs, newlines, and carriage returns).
+.TP
+\fBstring trimright \fIstring\fR ?\fIchars\fR?
+Returns a value equal to \fIstring\fR except that any
+trailing characters from the set given by \fIchars\fR are
+removed.
+If \fIchars\fR is not specified then white space is removed
+(spaces, tabs, newlines, and carriage returns).
+.TP
+\fBstring wordend \fIstring index\fR
+Returns the index of the character just after the last one in the
+word containing character \fIindex\fR of \fIstring\fR.
+A word is considered to be any contiguous range of alphanumeric
+or underscore characters, or any single character other than these.
+.TP
+\fBstring wordstart \fIstring index\fR
+Returns the index of the first character in the
+word containing character \fIindex\fR of \fIstring\fR.
+A word is considered to be any contiguous range of alphanumeric
+or underscore characters, or any single character other than these.
+
+.SH KEYWORDS
+case conversion, compare, index, match, pattern, string, word

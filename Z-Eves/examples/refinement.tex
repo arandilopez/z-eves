@@ -1,0 +1,94 @@
+\documentclass{article}
+\usepackage{z-eves}
+\begin{document}
+
+A fairly trivial refinement example in Z/EVES Version 2.
+
+\section{The Abstract System}
+
+\begin{schema}{TicketA}
+  given: \power \num
+\end{schema}
+
+\begin{schema}{InitA}
+  TicketA'
+\where
+  given' = \emptyset
+\end{schema}
+
+\begin{schema}{NewA}
+  \Delta TicketA \\
+  t!: \num
+\where
+  t! \notin given \\
+  given' = given \cup \{ t! \}
+\end{schema}
+
+\section{The Concrete System}
+
+\begin{schema}{TicketC}
+  next: \nat
+\end{schema}
+
+\begin{schema}{InitC}
+  TicketC'
+\where
+  next' = 0
+\end{schema}
+
+\begin{schema}{NewC}
+  \Delta TicketC \\
+  t!: \num
+\where
+  t!  = next \\
+  next' = next + 1
+\end{schema}
+
+\section{The Coupling Invariant}
+
+\begin{schema}{TicketAbs}
+  TicketA \\
+  TicketC
+\where
+  given = 0 \upto (next-1)
+\end{schema}
+
+\section{The Refinement Proof}
+
+\begin{theorem}{initRefinement}
+  \forall InitC @ \exists InitA @ TicketAbs'
+\end{theorem}
+\begin{zproof}
+prove by reduce;
+\end{zproof}
+
+
+\begin{theorem}{newAbs1}
+  \forall TicketAbs | \pre NewA @ \pre NewC
+\end{theorem}
+\begin{zproof}
+prove by reduce;
+\end{zproof}
+
+\begin{theorem}{rangeExtension}
+  \forall a, b: \num | a \leq b @ a \upto b = (a \upto b-1) \cup \{ b \}
+\end{theorem}
+\begin{zproof}
+apply extensionality;
+prove;
+with normalization simplify;
+\end{zproof}
+
+\begin{theorem}{newAbs2}
+  \forall NewC; TicketAbs | \pre NewA @
+  ( \exists TicketA' @ NewA \land TicketAbs' )
+\end{theorem}
+\begin{zproof}
+prove by reduce;
+use rangeExtension[a := 0, b := next] ;
+prove;
+\end{zproof}
+
+\end{document}
+
+

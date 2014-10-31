@@ -1,0 +1,149 @@
+\begin{zed}
+  [Client]
+\end{zed}
+
+\begin{schema}{Account}
+  users: \power_1 Client \\
+  balance: \num
+\end{schema}
+
+\begin{schema}{OpenAccount}
+  Account' \\
+  users?: \power_1 Client \\
+\where
+  users = users? \\
+  balance = 0
+\end{schema}
+
+\begin{schema}{OpenAccount}
+  Account' \\
+  users?: \power_1 Client \\
+\where
+  users' = users? \\
+  balance' = 0
+\end{schema}
+
+\begin{schema}{Deposit}
+  \Delta Account \\
+  amount?: \nat
+\where
+  balance' = balance + amount?
+\end{schema}
+
+
+\begin{zed}
+  Test1 \defs OpenAccount \semi Deposit
+\end{zed}
+
+try Test1[users? := \{ joe \}, amount? := 50];
+prove by reduce;
+
+%forgot something!
+
+undo back through Deposit;
+
+\begin{schema}{Deposit}
+  \Delta Account \\
+  amount?: \nat
+\where
+  balance' = balance + amount? \\
+  users' = users
+\end{schema}
+
+\begin{zed}
+  Test1 \defs OpenAccount \semi Deposit
+\end{zed}
+
+try Test1[users? := \{ joe \}, amount? := 50];
+prove by reduce;
+
+\begin{zed}
+  [ID]
+\end{zed}
+
+\begin{schema}{Bank}
+  account: ID \pfun Account \\
+  accounts: \power ID
+\where
+  accounts = \dom account
+\end{schema}
+
+\begin{schema}{NewAccount}
+  \Delta Bank \\
+  users?: \power_1 Client \\
+  id!: ID
+\where
+  id! \notin accounts \\
+  \exists Account' | OpenAccount @ 
+	account' = account \oplus \{ id! \mapsto \theta Account' \}
+\end{schema}
+
+try \forall Bank; users?: \power_1 Client @ \pre NewAccount;
+prove;
+prove by reduce;
+
+try \forall Bank; users?: \power_1 Client 
+	| (\exists someId:ID  @ someId \notin accounts)
+        @ \pre NewAccount;
+prove by reduce;
+instantiate id! == someId;
+prove;
+
+\begin{schema}{Balance}
+  \Delta Bank \\
+  client?: Client \\
+  id?: ID \\
+  balance!: \num
+\where
+  client? \in (account(id?)).users \\
+  balance! = (account(id?)).balance
+\end{schema}
+
+% domain check
+prove by reduce;
+
+undo;
+
+\begin{schema}{Balance}
+  \Delta Bank \\
+  client?: Client \\
+  id?: ID \\
+  balance!: \num
+\where
+  id? \in accounts \\
+  client? \in (account(id?)).users \\
+  balance! = (account(id?)).balance
+\end{schema}
+prove by reduce;
+
+\begin{zed}
+  Test2 \defs NewAccount \semi Balance[id!/id?]
+\end{zed}
+
+try Test2[users? := \{ george \}, client? := george];
+prove by reduce;
+
+% braino again!
+
+undo back through Balance ;
+
+\begin{schema}{Balance}
+  \Xi Bank \\
+  client?: Client \\
+  id?: ID \\
+  balance!: \num
+\where
+  id? \in accounts \\
+  client? \in (account(id?)).users \\
+  balance! = (account(id?)).balance
+\end{schema}
+prove by reduce;
+
+
+\begin{zed}
+  Test2 \defs NewAccount \semi Balance[id!/id?]
+\end{zed}
+
+try Test2[users? := \{ george \}, client? := george];
+prove by reduce;
+

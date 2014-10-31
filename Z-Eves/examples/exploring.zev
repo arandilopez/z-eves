@@ -1,0 +1,71 @@
+<Z-EVES-GUI-State version="1" index="0"><textItem history="2" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:1"><syntax-def>dj inrel "dj"</syntax-def></textItem
+><textItem history="3" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:2"><generic-box>[X]<decl-part/>   _dj _: &Popf;X &lrarr;&Popf;X <ax-part/>&lchev;disabled rule djDef&rchev;   &forall;A, B: &Popf;X &bullet; A dj B &hArr;A &cap;B = &empty;</generic-box></textItem
+><textItem history="4" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:3"><theorem-def usage="rule">djNullRight[X]<ax-part/>   &forall;A: &Popf;X &bullet; A dj {}</theorem-def></textItem
+><textItem history="5" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:4"><theorem-def usage="rule">djNullLeft[X]<ax-part/>   &forall;A: &Popf;X &bullet; {}dj A </theorem-def></textItem
+><textItem history="6" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:5"><theorem-def>djIsSymmetric[X]<ax-part/>   &forall;A, B: &Popf;X &bullet; A dj B &hArr;B dj A </theorem-def></textItem
+><textItem history="7" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:6"><theorem-def usage="rule">djCupLeft[X]<ax-part/>   &forall;A, B, C: &Popf;X &bullet;      A &cup;B dj C &hArr;A dj C &wedge;B dj C </theorem-def></textItem
+><textItem history="8" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:7"><theorem-def usage="rule">djCupRight[X]<ax-part/>   &forall;A, B, C: &Popf;X &bullet;      A dj B &cup;C &hArr;A dj B &wedge;A dj C </theorem-def></textItem
+><textItem history="9" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:8"><theorem-def usage="rule">djUnitLeft[X]<ax-part/>   &forall;x: X; A: &Popf;X &bullet;      {x }dj A &hArr;&not;x &isin;A </theorem-def></textItem
+><textItem history="10" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:9"><theorem-def usage="rule">djUnitRight[X]<ax-part/>   &forall;x: X; A: &Popf;X &bullet;      A dj {x }&hArr;&not;x &isin;A </theorem-def></textItem
+><textItem history="11" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:10"><theorem-def>djMonotone[X]<ax-part/>   &forall;A, A', B, B': &Popf;X         | A dj B &wedge;A' &subeq;A &wedge;B' &subeq;B         &bullet; A' dj B' </theorem-def></textItem
+><textItem history="12" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:11"><theorem-def usage="rule">djSelf[X]<ax-part/>   &forall;A: &Popf;X &bullet; A dj A &hArr;A = &empty;</theorem-def></textItem
+><textItem history="13" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:12"><theorem-def>djFact[X]<ax-part/>   &forall;A, B: &Popf;X; x: X         | A dj B &wedge;x &isin;A         &bullet; &not;x &isin;B </theorem-def></textItem
+><textItem history="14" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:13"><theorem-def>calculation1<ax-part/>   {1, 2, 3 }dj {4 }</theorem-def></textItem
+><textItem history="15" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:14"><theorem-def>calculation2<ax-part/>   {1, 2, 3 }dj 10 ..20 </theorem-def></textItem
+><textItem history="16" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:15"><theorem-def>calculation3<ax-part/>  &not;{1, 2, 3 }dj 2 ..20 </theorem-def></textItem
+><textItem history="17" location="/home/eves/release/z-eves-2-2/examples/exploring.tex:16"><theorem-def>calculation4<ax-part/>  &Nopf;dj {-3, -2, -1 }</theorem-def></textItem
+><script name="djIsSymmetric"><scriptItem number="2"><ztext> apply djDef</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+></script
+><script name="djUnitLeft"><scriptItem number="2"><ztext> apply djDef</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+></script
+><script name="djSelf"><scriptItem number="2"><ztext> apply djDef</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>apply capSubsetRight</ztext></scriptItem
+><scriptItem number="5"><ztext>rewrite</ztext></scriptItem
+></script
+><script name="djCupLeft"><scriptItem number="2"><ztext> apply djDef</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>apply distributeCapOverCupRight</ztext></scriptItem
+><scriptItem number="5"><ztext>prove</ztext></scriptItem
+></script
+><script name="calculation2"><scriptItem number="2"><ztext> prove</ztext></scriptItem
+></script
+><script name="calculation3"><scriptItem number="2"><ztext> prove</ztext></scriptItem
+></script
+><script name="djCupRight"><scriptItem number="2"><ztext> use djIsSymmetric[X][B := B &cup;[X] C]</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>use djIsSymmetric[X]</ztext></scriptItem
+><scriptItem number="5"><ztext>use djIsSymmetric[X][B := C]</ztext></scriptItem
+><scriptItem number="6"><ztext>prove</ztext></scriptItem
+></script
+><script name="calculation1"><scriptItem number="2"><ztext> prove</ztext></scriptItem
+></script
+><script name="calculation4"><scriptItem number="2"><ztext> prove</ztext></scriptItem
+></script
+><script name="djMonotone"><scriptItem number="2"><ztext> apply djDef</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>apply extensionality</ztext></scriptItem
+><scriptItem number="5"><ztext>prove</ztext></scriptItem
+><scriptItem number="6"><ztext>instantiate x__0 == x</ztext></scriptItem
+><scriptItem number="7"><ztext>prove</ztext></scriptItem
+><scriptItem number="8"><ztext>split x &isin;B'</ztext></scriptItem
+><scriptItem number="9"><ztext>prove</ztext></scriptItem
+></script
+><script name="djFact"><scriptItem number="2"><ztext> apply djDef</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+><scriptItem number="4"><ztext>apply extensionality</ztext></scriptItem
+><scriptItem number="5"><ztext>instantiate x__0 == x</ztext></scriptItem
+><scriptItem number="6"><ztext>prove</ztext></scriptItem
+></script
+><script name="djNullRight"><scriptItem number="2"><ztext> apply djDef</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+></script
+><script name="djNullLeft"><scriptItem number="2"><ztext> apply djDef</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+></script
+><script name="djUnitRight"><scriptItem number="2"><ztext> apply djDef</ztext></scriptItem
+><scriptItem number="3"><ztext>prove</ztext></scriptItem
+></script
+></Z-EVES-GUI-State>

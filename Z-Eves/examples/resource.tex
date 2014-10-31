@@ -1,0 +1,45 @@
+\begin{zed}
+  [Resource]
+\end{zed}
+
+\begin{schema}{Manager}
+  used, free: \power Resource
+\where
+  used \dj free
+\end{schema}
+
+\begin{schema}{InitManager}
+  Manager
+\where
+  used = free = \emptyset
+\end{schema}
+
+\begin{theorem}{InitManagerIsOK}
+  \exists Manager @ InitManager
+\end{theorem}
+
+\begin{schema}{AddResource}
+  \Delta Manager \\
+  r?: Resource
+\where
+  r? \notin free \cup used \\
+  used' = used \\
+  free' = free \cup \{ r? \}
+\end{schema}
+
+\begin{theorem}{AddResourceIsHonest}
+  \forall Manager; r?: Resource | r? \notin free \cup used @ \pre AddResource
+\end{theorem}
+
+\begin{schema}{Alloc}
+  \Delta Manager \\
+  r!: Resource
+\where
+  r! \in free \\
+  free' = free \setminus \{ r! \} \\
+  used' = used \cup \{ r! \}
+\end{schema}
+
+\begin{theorem}{AllocIsHonest}
+  \forall Manager | free \neq \{\} @ \pre Alloc
+\end{theorem}

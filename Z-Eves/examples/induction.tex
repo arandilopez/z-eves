@@ -1,0 +1,107 @@
+\documentclass{article}
+\usepackage{z-eves}
+\begin{document}
+\section{Induction proofs in Z/EVES}
+
+Proof by induction for naturals, finite sets, and sequences is described in
+the Toolkit documentation:
+ 
+   We express the induction schemes using set variables.  In order to use
+   induction to show $\forall n: \nat @ P(n)$ for some property $P$, one
+   first forms the set $P\_values == \{~n: \nat | P(n)~\}$, then uses one
+   of the induction theorems to show $\nat \subseteq P\_values$.  Rewriting
+   this (using $subDef$ and $inPower$) gives the original goal.
+   
+\subsection{Induction over the Natural numbers}
+
+The induction theorem for natural numbers is theorem $natInduction$,
+asserting
+$$     \forall S: \power \num
+        |       0 \in S
+          \land (\forall x: S @ x + 1 \in S)
+        @ \nat \subseteq S. $$
+
+Here is an example induction proof of
+$$\forall n: \nat @ n * n \geq n$$
+by induction.  We start by declaring the set
+
+\begin{zed}
+  set1 == \{ n: \nat | n*n \geq n \}
+\end{zed}
+
+(We need to do this because Z/EVES will not let you introduce a set
+comprehension in the middle of a proof)
+
+Now we use induction to show
+
+\begin{theorem}{lemma1}
+  \nat \subseteq set1
+\end{theorem}
+
+\begin{zproof}
+use natInduction [S := set1];
+invoke set1;
+prove;
+\end{zproof}
+
+Now the main theorem can be proved:
+
+\begin{theorem}{thm1}
+ \forall n: \nat @ n* n \geq n
+\end{theorem}
+
+\begin{zproof}
+use lemma1;
+invoke set1;
+rewrite;
+apply inPower;
+instantiate e == n;
+rewrite;
+\end{zproof}
+
+A bit awkward, but it works.
+
+\subsection{Induction for free types}
+
+A similar "induction" theorem is generated for free types.  For example,
+the declaration
+
+\begin{zed}
+  T ::= nil | leaf \ldata \num \rdata | pair \ldata T \cross T \rdata
+\end{zed}
+
+generates an axiom called $T\$induction$, expressing the induction
+principle for the type.
+
+Here is a sample inductive proof.  First, we define a function that flips
+left and right children throughout a tree:
+
+\begin{axdef}
+  flip: T \fun T
+\where
+\Label{rule flipNil} flip~nil = nil
+\\
+\Label{rule flipLeaf} \forall x: \num @ flip (leaf~x) = leaf~x
+\\
+\Label{rule flipPair} \forall x, y: T @ flip (pair (x,y)) =
+		pair (flip (y), flip (x))
+\end{axdef}
+
+We will show flipping twice leaves a tree unchanged.
+As before, we define the set we will use to induct:
+
+\begin{zed}
+  flipFlipSet == \{ x: T | flip (flip~x) = x \}
+\end{zed}
+
+\begin{theorem}{rule flipFlip}
+  \forall x: T @ flip (flip ~ x) = x
+\end{theorem}
+\begin{zproof}
+use T\$induction [X := flipFlipSet] ;
+invoke;
+prove;
+\end{zproof}
+
+\end{document}
+

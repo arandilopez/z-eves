@@ -1,0 +1,203 @@
+% developing a simple theory for disjointness
+
+%%inrel \dj
+\mathrel \dj {\mbox{\rm dj}}
+
+\begin{gendef}[X]
+  \_ \dj \_: \power X \rel \power X
+\where
+  \forall A, B: \power X @ A \dj B \iff A \cap B = \emptyset
+\end{gendef}
+
+read "resource.tex" ;
+
+try lemma InitManagerIsOK;
+prove by reduce;
+use axiom\$1[Resource][A := \{\}, B := \{\}];
+% ugh!
+
+try lemma AddResourceIsHonest;
+prove by reduce;
+% leaves
+               used \in \power Resource \\
+         \land free \in \power Resource \\
+         \land r? \in Resource \\
+         \land used \dj free \\
+         \land \lnot r? \in free \\
+         \land \lnot r? \in used \\
+\implies used \dj free \cup \{r?\}
+
+use axiom\$1[Resource][A := used, B := free ];
+use axiom\$1[Resource][A := used, B := free \cup \{ r? \}];
+prove;
+apply distributeCapOverCupRight;
+prove;
+
+try lemma AllocIsHonest;
+prove by reduce;
+use nonEmptySetHasMember[S := free];
+prenex;
+instantiate r! == x;
+prove;
+use axiom\$1[Resource][A := used \cup \{x\}, B := free \setminus \{x\}];
+use axiom\$1[Resource][A := used, B := free];
+prove;
+apply extensionality;
+prove;
+instantiate x\_\_2 == x\_\_1 ;
+prove;
+
+% not too convenient!
+
+% approach 1: eliminate \dj
+
+undo back through \_ \dj \_;
+
+\begin{gendef}[X]
+  \_ \dj \_: \power X \rel \power X
+\where
+\Label{rule djDef}
+  \forall A, B: \power X @ A \dj B \iff A \cap B = \emptyset
+\end{gendef}
+
+% try the example again
+
+read "resource.tex" ;
+
+try lemma InitManagerIsOK;
+prove by reduce;
+
+
+try lemma AddResourceIsHonest;
+prove by reduce;
+% leaves
+
+               used \in \power Resource \\
+         \land free \in \power Resource \\
+         \land r? \in Resource \\
+         \land free \cap used = \{\} \\
+         \land \lnot r? \in free \\
+         \land \lnot r? \in used \\
+\implies used \cap (free \cup \{r?\}) = \{\}
+apply distributeCapOverCupRight;
+prove;
+
+try lemma AllocIsHonest;
+prove by reduce;
+use nonEmptySetHasMember[S := free];
+prenex;
+instantiate r! == x;
+prove;
+% \lnot (used \cup \{x\}) \cap (free \setminus \{x\}) = \{\}
+apply extensionality;
+prove;
+instantiate x\_\_2 == x\_\_1;
+prove;
+
+% still a bit ugly.  try again!
+
+undo back through \_ \dj \_ ;
+
+\begin{gendef}[X]
+  \_ \dj \_: \power X \rel \power X
+\where
+\Label{disabled rule djDef}
+  \forall A, B: \power X @ A \dj B \iff A \cap B = \emptyset
+\end{gendef}
+
+\begin{theorem}{rule djNullRight}[X]
+  \forall A: \power X @ A \dj \{\}
+\end{theorem}
+
+\begin{theorem}{rule djNullLeft}[X]
+  \forall A: \power X @ \{\} \dj A
+\end{theorem}
+
+\begin{theorem}{djIsSymmetric}[X]
+  \forall A, B: \power X @ A \dj B \iff B \dj A
+\end{theorem}
+
+\begin{theorem}{rule djCupLeft}[X]
+  \forall A, B, C: \power X @
+     A \cup B \dj C \iff A \dj C \land B \dj C
+\end{theorem}
+
+\begin{theorem}{rule djCupRight}[X]
+  \forall A, B, C: \power X @
+     A \dj B \cup C \iff A \dj B \land A \dj C
+\end{theorem}
+
+% lets try the example now
+
+read "resource.tex" ;
+
+try lemma InitManagerIsOK;
+prove by reduce;
+
+
+try lemma AddResourceIsHonest;
+prove by reduce;
+% leaves
+% ... \implies used \dj \{ r? \}
+
+try lemma AllocIsHonest;
+prove by reduce;
+use nonEmptySetHasMember[S := free];
+prenex;
+instantiate r! == x;
+prove;
+% still some ugliness; lets add some facts
+
+undo back through Resource;
+
+\begin{theorem}{rule djUnitLeft}[X]
+  \forall x: X; A: \power X @ 
+    \{ x \} \dj A \iff \lnot x \in A
+\end{theorem}
+
+\begin{theorem}{rule djUnitRight}[X]
+  \forall x: X; A: \power X @ 
+    A \dj \{ x \} \iff \lnot x \in A
+\end{theorem}
+
+\begin{theorem}{djMonotone}[X]
+  \forall A, A', B, B': \power X
+        | A \dj B \land A' \subseteq A \land B' \subseteq B
+        @ A' \dj B'
+\end{theorem}
+
+% now try again!
+
+read "resource.tex" ;
+
+try lemma InitManagerIsOK;
+prove by reduce;
+
+
+try lemma AddResourceIsHonest;
+prove by reduce;
+
+try lemma AllocIsHonest;
+prove by reduce;
+use nonEmptySetHasMember[S := free];
+prenex;
+instantiate r! == x;
+prove;
+use djMonotone[Resource]
+     [A := used, A' := used, B := free, B' := free \setminus \{x\}];
+prove;
+
+% we have enough rules to calculate:
+
+try \{ 1, 2, 3 \} \dj \{ 4 \} ;
+prove;
+
+try \{ 1, 2, 3 \} \dj 10 \upto 20;
+prove;
+
+try \{ 1, 2, 3 \} \dj 2 \upto 20 ;
+prove;
+
+try \nat \dj \{ -3, -2, -1 \} ;
+prove;
+

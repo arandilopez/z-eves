@@ -1,0 +1,299 @@
+% Z/EVES demo script file
+%
+% for version 1.5
+%
+
+%================================================================
+% Syntax and type checking
+%
+
+\begin{zed}
+  I[X] \defs \{ x: X @ (x,x) \}
+\end{zed}
+
+\begin{zed}
+  I[X] == \{ x: X @ (x + 0,x) \}
+\end{zed}
+
+check "sample.tex" ;
+
+reset;
+read "sample.tex" ;
+
+reset;
+%================================================================
+% Domain checking
+%
+
+\begin{zed}
+[PERSON]
+\end{zed}
+
+\begin{schema}{Personnel}
+employees: \power PERSON \\
+boss\_of: PERSON \pfun PERSON \\
+salary: PERSON \pfun \nat
+\where
+\dom salary = employees
+\also
+\forall e: employees @
+  salary(e) < salary(boss\_of~e)
+\end{schema}
+
+rewrite;
+
+% Not necessarily true.
+% We forgot (1) not everyone has a boss, (2) all bosses must be employees.
+%
+
+% Here is a part of the "Library" specification from Poter, Sinclair and Till:
+
+\begin{zed}
+[Copy, Book, Reader]
+\end{zed}
+
+\begin{axdef}
+maxloans: \nat
+\end{axdef}
+
+% first crack at library schema:
+
+\begin{schema}{Library}
+  stock: Copy \pfun Book \\
+  issued: Copy \pfun Reader \\
+  shelved: \power Copy \\
+  readers: \power Reader
+\where
+  shelved = \dom stock \setminus \dom issued
+\also
+  \ran issued \subseteq readers
+\also
+  \dom issued \subseteq \dom stock
+\also
+  \forall r: readers @ \# (issued \rres \{ r \}) \leq maxloans
+\end{schema}
+
+% try simplifying the domain codition
+
+rewrite;
+
+% hmm... can a reader only have a finite number of books?
+% we didn't say so, so the subexpression \# (issued \rres \{ r \})
+% might not be meaningful.
+
+undo;
+
+% a fixed version.  Here, $issued$ is a finite function.  Since only finitely
+% many books have been issued, obviously any one reader only has finitely
+% many
+
+\begin{schema}{Library}
+  stock: Copy \pfun Book \\
+  issued: Copy \ffun Reader \\
+  shelved: \power Copy \\
+  readers: \power Reader
+\where
+  shelved = \dom stock \setminus \dom issued
+\also
+  \ran issued \subseteq readers
+\also
+  \dom issued \subseteq \dom stock
+\also
+  \forall r: readers @ \# (issued \rres \{ r \}) \leq maxloans
+\end{schema}
+
+rewrite;
+
+%================================================================
+%  Schema expansion
+%
+
+\begin{schema}{Account}
+  overdraft\_limit: \nat \\
+  balance: \num
+\where
+  balance + overdraft\_limit \geq 0
+\end{schema}
+
+\begin{schema}{OpenAccount}
+  Account' \\
+  overdraft\_limit?: \nat
+\where
+  overdraft\_limit' = overdraft\_limit? \\
+  balance' = 0
+\end{schema}
+
+% other operations omitted
+
+\begin{zed}
+  [AccountID, CLIENT]
+\end{zed}
+
+\begin{schema}{Bank}
+  clients: \power CLIENT \\
+  account: AccountID \pfun Account \\
+  accounts: \power AccountID \\
+  access: CLIENT \rel AccountID
+\where
+  accounts = \dom account \\
+  \dom access \subseteq clients \\
+  \ran access \subseteq accounts
+\end{schema}
+
+\begin{schema}{NewAccount}
+  \Delta Bank \\
+  client?: CLIENT \\
+  overdraft\_limit? : \nat \\
+  account\_id!: AccountID
+\where
+  client? \in clients \\
+  account\_id! \notin accounts \\
+  \exists Account' | OpenAccount @
+    account' = account \oplus \{ account\_id! \mapsto \theta Account' \} \\
+  access' = access \cup \{ (client?, account\_id!) \}
+\end{schema}
+
+try NewAccount;
+prove by reduce;
+
+% the level of expansion can be controlled:
+retry;
+with disabled (Bank) prove by reduce;
+
+% or ...
+retry;
+invoke NewAccount;
+invoke OpenAccount;
+prove;
+% ... (leaving off "by reduce" stops automatic expansion).
+
+%================================================================
+% Satisfiability checking
+%
+
+\begin{schema}{InitBank}
+  Bank'
+\where
+  clients' = \emptyset \\
+  account' = \emptyset \\
+  accounts' = \emptyset \\
+  access' = \emptyset
+\end{schema}
+
+try \exists Bank' @ InitBank;
+prove by reduce;
+
+%================================================================
+% Symbolic Execution
+%
+
+\begin{schema}{AddClient}
+  \Delta Bank \\
+  client?: CLIENT
+\where
+  clients' = clients \cup \{ client? \} \\
+  account' = account \\
+  access' = access
+\end{schema}
+
+% test scenario:
+
+\begin{zed}
+  TestBank1 \defs InitBank \semi AddClient
+\end{zed}
+
+try TestBank1;
+prove by reduce;
+
+% scenario two:
+
+\begin{zed}
+  TestBank2 \defs TestBank1  \semi NewAccount
+\end{zed}
+
+try TestBank2;
+prove by reduce;
+
+% clients' is underconstrained.  We should have added "clients' = clients"
+% to schema NewAccount
+
+we can see what effect that would have:
+
+\begin{zed}
+  TestBank3 \defs TestBank1  \semi [NewAccount | clients' = clients]
+\end{zed}
+
+try TestBank3;
+prove by reduce;
+
+%================================================================
+% Precondition checking
+%
+
+% Another example: a simple "city hall" marriage registry
+
+\begin{zed}
+[Man, Woman]
+\end{zed}
+
+% The relation $wife\_of$ records the set of couples, it is a partial (not all
+% men are married) injection (bigamy is illegal) from men to women.
+
+\begin{schema}{Registry}
+  wife\_of: Man \pinj Woman
+\end{schema}
+
+% The $Wed$ operation adds new couple to the registry:
+
+\begin{schema}{Wed}
+  \Delta Registry \\
+  bride?: Woman \\
+  groom?: Man
+\where
+  wife\_of' = wife\_of \cup \{ groom? \mapsto bride? \}
+\end{schema}
+
+% Let's examine the precondition
+
+try \forall Registry; bride?: Woman; groom?: Man @ \pre Wed;
+prove by reduce;
+with enabled (cupInPinj) prove;
+
+% suggests: if the groom already has a wife, it had better be the bride,
+% and conversely.
+
+% In fact, they should not be previously married at all.
+
+\begin{schema}{GoodWed}
+  \Delta Registry \\
+  bride?: Woman \\
+  groom?: Man
+\where
+  bride? \notin \ran wife\_of
+ \\
+  groom? \notin \dom wife\_of
+ \\
+  wife\_of' = wife\_of \cup \{ groom? \mapsto bride? \}
+\end{schema}
+
+%================================================================
+%  General theorem proving
+%
+
+% we can validate a specification by trying to prove simple properties
+
+% e.g., after a good wedding, the bride is the wife of the groom:
+
+try \forall GoodWed @ wife\_of'(groom?) = bride? ;
+prove by reduce;
+
+% or: can satisfy the initialization schema
+
+\begin{schema}{InitRegistry}
+  Registry'
+\where
+  wife\_of' = \emptyset
+\end{schema}
+
+try \exists Registry' @ InitRegistry;
+prove by reduce;
