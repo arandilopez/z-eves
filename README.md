@@ -6,6 +6,10 @@
 2. Copy its contents in a new directory in `/opt/Z`
 3. Run `bash /opt/Z/Z-Eves/system/z-eves-gui.sh`
 
+### Need to run in 64bits OS?
+
+- run `sh 64bits/install.sh` to install dependencies
+
 ## Why Z-EVES??
 
 Neither I know why o for what you should use this shit... but let me tell you something...
