@@ -12,7 +12,7 @@
 
 ## Why Z-EVES??
 
-Neither I know why o for what you should use this shit... but let me tell you something...
+Neither I know why or for what you should use this shit... but let me tell you something...
 
 You maybe need to use it. If you (like me) are studying Software Engineering at UADY. You will be prompt to use this shit. Yes you will.
 
