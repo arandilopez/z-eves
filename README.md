@@ -3,7 +3,7 @@
 ## Instalation and usage
 
 1. Clone this repo anywhere
-2. Copy its contents in a new directory, like: `/opt/Z`
+2. Copy its contents in `/opt/Z`
 3. Then run `bash /opt/Z/Z-Eves/system/z-eves-gui.sh`
 
 ### Need to run in 64bits OS?
