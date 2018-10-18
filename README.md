@@ -19,3 +19,11 @@ You maybe need to use it. If you (like me) are studying Software Engineering or 
 This is a linux version (that I used to use) for z-eves. So, why linux? because Windows is a shit and with this z-eves shit the fucking shit is gonna happen... all right, basically, z-eves close unexpectedly when you scroll... yes, a dumb shit... you cannot scroll when using z-eves on windows. So please, use linux.
 
 With :heart: SE. Arandi López
+
+
+## Usage?
+
+https://www.cs.york.ac.uk/ftpdir/pub/leo/mefes/zeves/manuals/userguide.pdf
+
+## License?
+All copy rights are to the guy/enterprice who code it
