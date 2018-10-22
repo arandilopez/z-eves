@@ -26,4 +26,4 @@ With :heart: SE. Arandi López
 https://www.cs.york.ac.uk/ftpdir/pub/leo/mefes/zeves/manuals/userguide.pdf
 
 ## License?
-All copy rights are to the guy/enterprice who code it
+All copy rights are to the guy/enterprise who code it
