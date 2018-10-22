@@ -5,6 +5,7 @@
 1. Clone this repo anywhere
 2. Copy its contents in `/opt/Z`
 3. Then run `bash /opt/Z/Z-Eves/system/z-eves-gui.sh`
+4. Use it
 
 ### Need to run in 64bits OS?
 
