@@ -8,9 +8,14 @@
 # path, and make it executable. You may also have to change the definition of
 # the python variable.
 
-zevesdir=/opt/Z/Z-Eves/
+realpaththisfile=$(realpath $0)
+#zevesdir=/opt/Z/Z-Eves/
+thisfiledirectory=$(dirname $realpaththisfile)
+zevesdir=$(dirname $thisfiledirectory)
 zguidir=$zevesdir/gui-1.5
-python=/opt/Z/bin/python
+#python=/opt/Z/bin/python
+basezeves=$(dirname $zevesdir)
+python=$basezeves/bin/python
 
 
 lispdir=$zevesdir/system
