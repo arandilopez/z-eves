@@ -2,7 +2,7 @@
 
 ## Instalation and usage
 
-1. Clone this repo anywhere
+1. [Download](https://github.com/arandilopez/z-eves/archive/master.zip) this repo anywhere
 2. Copy its contents in `/opt/Z`
 3. Then run `bash /opt/Z/Z-Eves/system/z-eves-gui.sh`
 4. Use it
