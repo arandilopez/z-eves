@@ -13,18 +13,18 @@
 
 ## Why Z-EVES??
 
-Neither I know why or for what you should use this shit... but let me tell you something...
+Neither I know why or for what you should use this shit, but let me tell you something.
 
-You maybe need to use it. If you (like me) are studying Software Engineering or any Computer Science related degree, you may be prompt to use this shit. Yes.
+You maybe need to use it if you (like me) are studying Software Engineering or any Computer Science related degree, you may be prompt to use this shit.
 
-This is a linux version (that I used to use) for z-eves. So, why linux? because Windows is a shit and with this z-eves shit the fucking shit is gonna happen... all right, basically, z-eves close unexpectedly when you scroll... yes, a dumb shit... you cannot scroll when using z-eves on windows. So please, use linux.
+This is a linux version (that I used to use) for z-eves. So, why linux? because Windows is a shit.
 
 With :heart: SE. Arandi López
 
 
 ## Usage?
 
-https://www.cs.york.ac.uk/ftpdir/pub/leo/mefes/zeves/manuals/userguide.pdf
+[Maybe this PDF can help you](https://github.com/arandilopez/z-eves/blob/master/97-5505-04g.pdf)
 
 ## License?
-All copy rights are to the guy/enterprise who code it
+All copyrights are to the guy/enterprise who code it
